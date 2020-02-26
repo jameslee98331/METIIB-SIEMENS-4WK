@@ -1,12 +1,12 @@
 import cv2 as cv
 import matplotlib.pyplot as plt
-from files.file_handling import dir_empty, full_path
-import image_processing.feature_detection as feature
+from siecon_cv_metiib.files.file_handling import dir_empty, full_path
+import siecon_cv_metiib.image_processing.feature_detection as feature
 
 
 def main():
 
-    img_dir = 'files//live_img//'
+    img_dir = 'files/live_img//'
 
     # continuously checks if there are images to be processed in the live_img directory
     while dir_empty(img_dir):

@@ -1,7 +1,7 @@
 .idea/
 venv/
 __pycache__/
-files/input_files/
-files/output_files/
+siecon_cv_metiib/files/input_files/
+siecon_cv_metiib/files/output_files/
 misc/
 live_img/
