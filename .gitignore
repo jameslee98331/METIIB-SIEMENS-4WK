@@ -1,5 +1,6 @@
 .idea/
 venv/
 __pycache__/
-input_files/
-output_files/
+files/input_files/
+files/output_files/
+misc/
