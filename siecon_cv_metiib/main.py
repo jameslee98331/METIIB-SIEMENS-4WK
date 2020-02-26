@@ -1,7 +1,8 @@
 import cv2 as cv
 import matplotlib.pyplot as plt
 from siecon_cv_metiib.files.file_handling import dir_empty, full_path
-import siecon_cv_metiib.image_processing.feature_detection as feature
+from siecon_cv_metiib.image_processing import features
+from siecon_cv_metiib.image_processing import offset
 
 
 def main():
@@ -16,26 +17,25 @@ def main():
     img = cv.imread(file_path)
 
     # draw your selected ROI on the mask image
-    mask1 = feature.mask(img, start=(1180, 1040), finish=(1220, 1100))
-    mask2 = feature.mask(img, start=(1180, 1300), finish=(1220, 1360))
+    mask0 = features.mask(img, start=(1180, 1040), finish=(1220, 1100))
+    mask1 = features.mask(img, start=(1180, 1300), finish=(1220, 1360))
 
-    kp1_coord = feature.kp_coord(img, mask1)
-    kp2_coord = feature.kp_coord(img, mask2)
+    kp0_coord = features.kp_coord(img, mask0)
+    kp1_coord = features.kp_coord(img, mask1)
 
+    kp0 = features.kp(img, mask0)
+    kp1 = features.kp(img, mask1)
+    kp = kp0 + kp1
 
-    # print(kp1_coord)
-    # print(kp2_coord)
-    # print(len(kp1_coord))
-    # print(len(kp2_coord))
+    centroid_0 = offset.centroid(kp0_coord)
+    centroid_1 = offset.centroid(kp1_coord)
 
-    kp1 = feature.kp(img, mask1)
-    kp2 = feature.kp(img, mask2)
-    kp = kp1 + kp2
-
-    kp_img = feature.kp_img(img, kp)
-
+    kp_img = features.kp_img(img, kp)
     plt.imshow(kp_img)
     plt.show()
+
+    print(centroid_0)
+    print(centroid_1)
 
 
 if __name__ == '__main__':
