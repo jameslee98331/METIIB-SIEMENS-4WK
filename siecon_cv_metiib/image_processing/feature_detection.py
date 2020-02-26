@@ -33,4 +33,4 @@ def kp_img(img, kp):
     key_points, descriptors = orb.compute(img, kp)
 
     # draw only keypoints location,not size and orientation
-    return cv.drawKeypoints(img, key_points, img, color=(255, 0, 0), flags=0)
+    return cv.drawKeypoints(img, key_points, img, color=(0, 255, 0), flags=0)
