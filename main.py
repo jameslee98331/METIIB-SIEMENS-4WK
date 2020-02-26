@@ -1,44 +1,40 @@
-from image_processing import preproc
-import matplotlib.pyplot as plt
 import cv2 as cv
+import matplotlib.pyplot as plt
+from files.file_handling import dir_empty, full_path
+import image_processing.feature_detection as feature
 
-EMPTY = False
 
 def main():
 
-    while True:
-        # TODO: check if there is a jpeg file present in the directory, if present, proceed
-        if not EMPTY:
-            # TODO: read the jpeg image and return a matrix
-            break
-        else:
-            continue
+    img_dir = 'files//live_img//'
+
+    # continuously checks if there are images to be processed in the live_img directory
+    while dir_empty(img_dir):
+        continue
+
+    file_path = full_path(img_dir)
+    img = cv.imread(file_path)
+
+    # draw your selected ROI on the mask image
+    mask1 = feature.mask(img, start=(1180, 1040), finish=(1220, 1100))
+    mask2 = feature.mask(img, start=(1180, 1300), finish=(1220, 1360))
+
+    kp1_coord = feature.kp_coord(img, mask1)
+    kp2_coord = feature.kp_coord(img, mask2)
 
 
+    # print(kp1_coord)
+    # print(kp2_coord)
+    # print(len(kp1_coord))
+    # print(len(kp2_coord))
 
-    filename = 'files/input_files//preproc//img_preproc_1.jpg'
-    img = preproc.read_file(filename)
+    kp1 = feature.kp(img, mask1)
+    kp2 = feature.kp(img, mask2)
+    kp = kp1 + kp2
 
-    img_socket = img[1000:1412,1118:1271]
-    print(img_socket.shape)
+    kp_img = feature.kp_img(img, kp)
 
-    cv.imwrite('files/output_files//img_cropped.jpg', img)
-    cv.imwrite('files/output_files//img_socket.jpg', img_socket)
-
-    plt.imshow(img_socket)
-    plt.show()
-
-# def img_masked(img,sample_range):
-#     img[sample_range]
-    img_masked = img
-
-    for i in range(1000-10,1412):
-        for j in range(1118-20,1271):
-            img_masked[i,j] = img[(1042,1166)]
-
-    cv.imwrite('files/output_files//img_masked.jpg', img_masked)
-
-    plt.imshow(img_masked)
+    plt.imshow(kp_img)
     plt.show()
 
 
