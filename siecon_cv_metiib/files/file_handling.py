@@ -10,6 +10,8 @@ def dir_empty(dirName):
     else:
         raise Exception("Given Directory don't exists")
 
-def full_path(dirName):
+def first_img(dirName):
     filename = os.listdir(dirName)
+
+    # Only reads the first file in the directory
     return dirName + filename[0]
