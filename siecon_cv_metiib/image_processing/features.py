@@ -10,7 +10,7 @@ def keypts(img: np.ndarray, mask: np.ndarray) -> tuple:
 
     Returns:
         tuple:
-            - list of keypoint locations in tuples of (row[i], column[i])
+            - list of tuples (row[i], col[i]) of keypoint locations
             - list of keypoint objects
     """
 
