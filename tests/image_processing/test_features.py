@@ -2,7 +2,7 @@ import numpy as np
 from siecon_cv_metiib.image_processing import features
 
 
-class TestFeatureDetection:
+class TestFeatures:
 
     def test_mask(self):
         test_img = np.asarray([[(1,2,3),(2,3,4),(3,4,5),(4,5,6),(1,2,3)],
