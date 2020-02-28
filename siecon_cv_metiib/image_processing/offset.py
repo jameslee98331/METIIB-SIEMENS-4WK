@@ -1,6 +1,7 @@
 import numpy as np
 
 
+# TODO: optimisation needed
 def centroid(kp_coord: list) -> tuple:
     """
     Args:
@@ -10,8 +11,8 @@ def centroid(kp_coord: list) -> tuple:
         tuple: mean location of keypoints (row, col)
     """
 
-    x = [kp_coord[i][0] for i in range(len(kp_coord))]
-    y = [kp_coord[i][1] for i in range(len(kp_coord))]
+    x = [coord[0] for coord in kp_coord]
+    y = [coord[1] for coord in kp_coord]
     return np.mean(x), np.mean(y)
 
 # TODO:

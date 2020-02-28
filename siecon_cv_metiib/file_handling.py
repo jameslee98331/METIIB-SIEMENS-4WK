@@ -12,6 +12,7 @@ def dir_empty(dirName):
     Raises:
         Exception: if img directory does not exist
     """
+
     # TODO: the pythonic way would still be to just try read a file and if it fails then loop
     if os.path.exists(dirName) and os.path.isdir(dirName):
         if os.listdir(dirName):
