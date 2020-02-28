@@ -159,6 +159,7 @@ def main():
     # TODO:
     #   - translate pixel offset to mm offset
     #   - return offset from reference datum as a float
+    #   - beware of infinite loop
 
 
 if __name__ == '__main__':
