@@ -1,4 +1,4 @@
-from siecon_cv_metiib.files import file_handling
+import file_handling
 
 
 class TestFileHandling:

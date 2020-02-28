@@ -1,10 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from collections import namedtuple
-from files import file_handling
+import file_handling
 from image_processing import offset, preproc, features
-from robot import robot_param
-
+import robot_param
 
 DEBUG = True
 
@@ -26,7 +25,7 @@ def main():
 
     # 3. File Handling
     # The directory captured image is stored
-    img_dir = 'files/live_img//'
+    img_dir = 'live_img//'
 
     # Check if img present in the live_img/ directory, continue when img exists
     while file_handling.dir_empty(img_dir):
