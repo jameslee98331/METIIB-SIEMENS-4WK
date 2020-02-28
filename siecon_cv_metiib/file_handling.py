@@ -21,6 +21,7 @@ def dir_empty(dirName):
     else:
         raise Exception("Given Directory don't exists")
 
+
 def first_img(dirName):
     """
     Args:

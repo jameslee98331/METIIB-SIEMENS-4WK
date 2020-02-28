@@ -159,6 +159,7 @@ def main():
     #   - translate pixel offset to mm offset
     #   - return offset from reference datum as a float
     #   - beware of infinite loop
+    #   - potential to use a IOT2020/2040 to run this code/ communicate with the
 
 
 if __name__ == '__main__':

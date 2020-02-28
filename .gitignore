@@ -1,17 +1,21 @@
+# Virtual environment and cache files
 .idea/
 venv/
 __pycache__/
+
+# directories
 misc/query
 misc/train
 misc/
-/siecon_cv_metiib/sample_files/output/img_cropped.jpg
-/siecon_cv_metiib/sample_files/output/img_masked.jpg
-/siecon_cv_metiib/sample_files/output/img_masked.psb
-/siecon_cv_metiib/sample_files/output/img_socket.jpg
-/siecon_cv_metiib/sample_files/output/ORB_keypoints.jpg
-/siecon_cv_metiib/sample_files/preproc/img_preproc_4.jpg
-/siecon_cv_metiib/sample_files/preproc/img_preproc_5.jpg
-/siecon_cv_metiib/sample_files/preproc/img_preproc_6.jpg
-/siecon_cv_metiib/sample_files/preproc/img_preproc_7.jpg
-/siecon_cv_metiib/sample_files/preproc/img_preproc_8.jpg
-/siecon_cv_metiib/sample_files/preproc/img_preproc_9.jpg
+
+# Extra image files
+*img_cropped*
+*img_masked*
+*img_socket*
+*img_preproc_4.jpg
+*img_preproc_5.jpg
+*img_preproc_6.jpg
+*img_preproc_7.jpg
+*img_preproc_8.jpg
+*img_preproc_9.jpg
+*ORB_keypoints.jpg
