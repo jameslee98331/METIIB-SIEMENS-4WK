@@ -2,8 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from collections import namedtuple
 from files import file_handling
-from image_processing import offset, preproc
-from image_processing.features import KeyPointFeature
+from image_processing import offset, preproc, features
 from robot import robot_param
 
 
@@ -15,9 +14,9 @@ def main():
     # 1. Integration with Automation System
     # TODO:
     #   - receive proceed flag from PLC when G120C FSAA is in place and clamped
-    # proceed_FLAG = False
-    # while not proceed_FLAG:
-    #     continue
+    #   proceed_FLAG = False
+    #   while not proceed_FLAG:
+    #       continue
 
     # 2. Capturing image with camera
     # TODO:
@@ -26,10 +25,10 @@ def main():
     #   - overwriting previous image
 
     # 3. File Handling
-    # The directory in which live images is stored
+    # The directory captured image is stored
     img_dir = 'files/live_img//'
 
-    # Check if there are images to be processed in the live_img/ directory
+    # Check if img present in the live_img/ directory, continue when img exists
     while file_handling.dir_empty(img_dir):
         continue
 
@@ -61,25 +60,27 @@ def main():
     # TODO: define these values in a config.py somewhere else so it is easier for deployment
     MASK_0_START = (1180, 1040)
     MASK_0_FINISH = (1220, 1100)
+
+    # Apply mask over ROI (top pin)
     mask_0_rect = rect(MASK_0_START, MASK_0_FINISH)
     mask_0 = preproc.mask(cropped_img, mask_0_rect)
 
-    feature = KeyPointFeature(cropped_img, mask_0)
-    key_pts_0_coord = feature.keypts_coord
-    key_pts_0 = feature.keypts
+    # Find locations of keypoints detected under mask 0 (top pin)
+    key_pts_0_coord, key_pts_0 = features.keypts(cropped_img, mask_0)
 
     # TODO: define these values in a config.py somewhere else so it is easier for deployment
     MASK_1_START = (1180, 1300)
     MASK_1_FINISH = (1220, 1360)
+
+    # Apply mask over ROI (bottom pin)
     mask_1_rect = rect(MASK_1_START, MASK_1_FINISH)
     mask_1 = preproc.mask(cropped_img, mask_1_rect)
 
-    feature = KeyPointFeature(cropped_img, mask_1)
-    key_pts_1_coord = feature.keypts_coord
-    key_pts_1 = feature.keypts
+    # Find locations of keypoints detected under mask 1 (bottom pin)
+    key_pts_1_coord, key_pts_1 = features.keypts(cropped_img, mask_1)
 
     if DEBUG:
-        key_pts_img = feature.keypts_img(cropped_img, key_pts_0 + key_pts_1)
+        key_pts_img = features.keypts_img(cropped_img, key_pts_0 + key_pts_1)
         plt.imshow(key_pts_img)
         plt.show()
 
@@ -92,65 +93,66 @@ def main():
         print(key_pts_1_centroid)
 
     # TODO:
-    #   - translate pixel offset to mm offset
-    #   - return offset from reference datum as a float
+    #   - translate pixel to mm by using a rigid key feature on the G120C FSAA (the product)
+    #   - find offset from reference datum as a float
 
+    # Ranges of pixels for the 4 corners of the rigid feature (rectangle)
     X_RANGE_LEFT = (400, 430)
     X_RANGE_RIGHT = (1010, 1040)
     Y_RANGE_TOP = (350, 380)
     Y_RANGE_BOT = (610, 640)
 
+    # Extract feature of top left corner
     MASK_TOP_LEFT_START = (X_RANGE_LEFT[0], Y_RANGE_TOP[0])
     MASK_TOP_LEFT_FINISH = (X_RANGE_LEFT[1], Y_RANGE_TOP[1])
     mask_top_left_rect = rect(MASK_TOP_LEFT_START, MASK_TOP_LEFT_FINISH)
     mask_top_left = preproc.mask(cropped_img, mask_top_left_rect)
-    feature = KeyPointFeature(cropped_img, mask_top_left)
-    key_pts_top_left_coord = feature.keypts_coord
+    key_pts_top_left_coord, key_pts_top_left = features.keypts(cropped_img, mask_top_left)
     key_pts_top_left_centroid = offset.centroid(key_pts_top_left_coord)
-    key_pts_top_left = feature.keypts
 
+    # Extract feature of top right corner
     MASK_TOP_RIGHT_START = (X_RANGE_RIGHT[0], Y_RANGE_TOP[0])
     MASK_TOP_RIGHT_END = (X_RANGE_RIGHT[1], Y_RANGE_TOP[1])
     mask_top_right_rect = rect(MASK_TOP_RIGHT_START, MASK_TOP_RIGHT_END)
     mask_top_right = preproc.mask(cropped_img, mask_top_right_rect)
-    feature = KeyPointFeature(cropped_img, mask_top_right)
-    key_pts_top_right_coord = feature.keypts_coord
+    key_pts_top_right_coord, key_pts_top_right = features.keypts(cropped_img, mask_top_right)
     key_pts_top_right_centroid = offset.centroid(key_pts_top_right_coord)
-    key_pts_top_right = feature.keypts
 
+    # Extract feature of bottom left corner
     MASK_BOT_LEFT_START = (X_RANGE_LEFT[0], Y_RANGE_BOT[0])
     MASK_BOT_LEFT_END = (X_RANGE_LEFT[1], Y_RANGE_BOT[1])
     mask_bot_left_rect = rect(MASK_BOT_LEFT_START, MASK_BOT_LEFT_END)
     mask_bot_left = preproc.mask(cropped_img, mask_bot_left_rect)
-    feature = KeyPointFeature(cropped_img, mask_bot_left)
-    key_pts_bot_left_coord = feature.keypts_coord
+    key_pts_bot_left_coord, key_pts_bot_left = features.keypts(cropped_img, mask_bot_left)
     key_pts_bot_left_centroid = offset.centroid(key_pts_bot_left_coord)
-    key_pts_bot_left = feature.keypts
 
+    # Extract feature of bottom right corner
     MASK_BOT_RIGHT_START = (X_RANGE_RIGHT[0], Y_RANGE_BOT[0])
     MASK_BOT_RIGHT_END = (X_RANGE_RIGHT[1], Y_RANGE_BOT[1])
     mask_bot_right_rect = rect(MASK_BOT_RIGHT_START, MASK_BOT_RIGHT_END)
     mask_bot_right = preproc.mask(cropped_img, mask_bot_right_rect)
-    feature = KeyPointFeature(cropped_img, mask_bot_right)
-    key_pts_bot_right_coord = feature.keypts_coord
+    key_pts_bot_right_coord, key_pts_bot_right = features.keypts(cropped_img, mask_bot_right)
     key_pts_bot_right_centroid = offset.centroid(key_pts_bot_right_coord)
-    key_pts_bot_right = feature.keypts
 
-    top_x = np.mean([(key_pts_top_right_centroid[0] - key_pts_top_left_centroid[0]),
+    # Calculate the length of the two edges in pixels
+    top_edge = np.mean([(key_pts_top_right_centroid[0] - key_pts_top_left_centroid[0]),
                     (key_pts_bot_right_centroid[0] - key_pts_bot_left_centroid[0])])
-    vert_y = np.mean([(key_pts_bot_left_centroid[1] - key_pts_top_left_centroid[1]),
+    vert_edge = np.mean([(key_pts_bot_left_centroid[1] - key_pts_top_left_centroid[1]),
                      (key_pts_bot_right_centroid[1] - key_pts_top_right_centroid[1])])
 
-    pix_per_mm_0 = top_x / 33
-    pix_per_mm_1 = vert_y / 14
-    a = np.mean([pix_per_mm_0, pix_per_mm_1])
+    # Calculate the pixel per mm scale factor, top_edge = 33mm, vert_edge = 14mm
+    pix_per_mm_0 = top_edge / 33
+    pix_per_mm_1 = vert_edge / 14
+    pix_per_mm = np.mean([pix_per_mm_0, pix_per_mm_1])
 
     if DEBUG:
         input_img = preproc.read_image(file_path)
         cropped_img = preproc.crop(input_img, crop_rect)
-        key_pts_img = feature.keypts_img(cropped_img, key_pts_top_left + key_pts_top_right + key_pts_bot_left + key_pts_bot_right)
+        key_pts_img = features.keypts_img(cropped_img, key_pts_top_left + key_pts_top_right + key_pts_bot_left + key_pts_bot_right)
         plt.imshow(key_pts_img)
         plt.show()
+
+    # TODO: Clear the live_img/ directory for next cycle
 
     # 7. Robot control
     robot_param.send()
