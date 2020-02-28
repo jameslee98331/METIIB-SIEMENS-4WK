@@ -27,13 +27,11 @@ def main():
     # TODO: this section should be refactored to read files from temp memory
     #       when camera is connected in the production environment
     # The directory captured image is stored
-    img_dir = 'live_img//'
+    file_path = 'live_img//0.jpg'
 
     # Check if img present in the live_img/ directory, continue when img exists
-    while file_handling.dir_empty(img_dir):
+    while file_handling.img_exists(file_path):
         continue
-
-    file_path = file_handling.first_img(img_dir)
 
     # 4. Pre-processing of Images
     input_img = preproc.read_image(file_path)
