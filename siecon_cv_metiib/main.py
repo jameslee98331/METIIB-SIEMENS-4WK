@@ -20,10 +20,12 @@ def main():
     # 2. Capturing image with camera
     # TODO:
     #   - taking pictures with camera
-    #   - saving the image into the image directory
+    #   - saving the image into temporary memory (RAM)
     #   - overwriting previous image
 
     # 3. File Handling
+    # TODO: this section should be refactored to read files from temp memory
+    #       when camera is connected in the production environment
     # The directory captured image is stored
     img_dir = 'live_img//'
 
@@ -150,8 +152,6 @@ def main():
         key_pts_img = features.keypts_img(cropped_img, key_pts_top_left + key_pts_top_right + key_pts_bot_left + key_pts_bot_right)
         plt.imshow(key_pts_img)
         plt.show()
-
-    # TODO: Clear the live_img/ directory for next cycle
 
     # 7. Robot control
     robot_param.send()

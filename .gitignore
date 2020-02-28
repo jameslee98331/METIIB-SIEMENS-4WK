@@ -1,6 +1,13 @@
 .idea/
 venv/
 __pycache__/
-siecon_cv_metiib/files/input_files/
-siecon_cv_metiib/files/output_files/
+siecon_cv_metiib/sample_files/input_files/query
+siecon_cv_metiib/sample_files/input_files/train
+siecon_cv_metiib/sample_files/output_files/
 misc/
+/siecon_cv_metiib/sample_files/input_files/preproc/img_preproc_4.jpg
+/siecon_cv_metiib/sample_files/input_files/preproc/img_preproc_5.jpg
+/siecon_cv_metiib/sample_files/input_files/preproc/img_preproc_6.jpg
+/siecon_cv_metiib/sample_files/input_files/preproc/img_preproc_7.jpg
+/siecon_cv_metiib/sample_files/input_files/preproc/img_preproc_8.jpg
+/siecon_cv_metiib/sample_files/input_files/preproc/img_preproc_9.jpg
