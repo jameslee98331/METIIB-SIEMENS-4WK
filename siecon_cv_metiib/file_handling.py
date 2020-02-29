@@ -1,16 +1,14 @@
-def img_exists(file_path):
+import numpy as np
+import cv2 as cv
+
+
+def read_image(filepath: str) -> np.ndarray:
     """
     Args:
-        file_path (str): file path to image
+        filepath (str): file path to the image being read
 
     Returns:
-        bool: True for empty or non-existent directory, False for img present
+        np.ndarray: array of the image with RGB values
     """
 
-    try:
-        f = open(file_path)
-        f.close()
-        return False
-
-    except FileNotFoundError:
-        return True
+    return cv.cvtColor(cv.imread(filepath), cv.COLOR_BGR2RGB)
