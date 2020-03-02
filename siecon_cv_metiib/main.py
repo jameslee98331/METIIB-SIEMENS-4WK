@@ -1,131 +1,74 @@
-import numpy as np
 import cv2 as cv
 import matplotlib.pyplot as plt
-from collections import namedtuple
-from siecon_cv_metiib import imgproc, robot_param
+import imgproc, robot_param, config
 
 DEBUG = True
 
 
 def process(input_img):
-
     # 4. Pre-processing of Images
 
-    # corner = (row, col)
-    # Defined limits to include only the G120C FSAA in the image frame
+    # Crop image to include only the G120C FSAA in the image frame
     # THIS IS TO BE ADJUSTED WHEN THE VISION SYSTEM IS PUT INTO THE PRODUCTION ENVIRONMENT
-    # TODO: define these values in a config.py somewhere else so it is easier for deployment
-    FRAME_START = (460, 680)
-    FRAME_FINISH = (3400, 2100)
-
-    # TODO: define the namedtuple somewhere else
-    rect = namedtuple('rect', 'start, finish')
-    crop_rect = rect(FRAME_START, FRAME_FINISH)
-
+    FRAME_START = config.dev_crop['START']
+    FRAME_FINISH = config.dev_crop['FINISH']
+    crop_rect = imgproc.draw_rect(FRAME_START, FRAME_FINISH)
     cropped_img = imgproc.crop(input_img, crop_rect)
 
-    # TODO:
-    #   - increase contrast
-    #   - return processed image
-
-    # 5. Feature Detection
-    # TODO: define these values in a config.py somewhere else so it is easier for deployment
-    MASK_0_START = (1180, 1040)
-    MASK_0_FINISH = (1220, 1100)
-
-    # Apply mask over ROI (top pin)
-    mask_0_rect = rect(MASK_0_START, MASK_0_FINISH)
-    mask_0 = imgproc.mask(cropped_img, mask_0_rect)
-
-    # Find locations of keypoints detected under mask 0 (top pin)
-    key_pts_0_coord, key_pts_0 = imgproc.keypts(cropped_img, mask_0)
-
-    # TODO: define these values in a config.py somewhere else so it is easier for deployment
-    MASK_1_START = (1180, 1300)
-    MASK_1_FINISH = (1220, 1360)
-
-    # Apply mask over ROI (bottom pin)
-    mask_1_rect = rect(MASK_1_START, MASK_1_FINISH)
-    mask_1 = imgproc.mask(cropped_img, mask_1_rect)
-
-    # Find locations of keypoints detected under mask 1 (bottom pin)
-    key_pts_1_coord, key_pts_1 = imgproc.keypts(cropped_img, mask_1)
-
     if DEBUG:
-        key_pts_img = imgproc.keypts_img(cropped_img, key_pts_0 + key_pts_1)
-        plt.imshow(key_pts_img)
+        plt.imshow(cropped_img)
+        plt.title("cropped image")
         plt.show()
 
-    # 6. Offset Calculation
-    key_pts_0_centroid = imgproc.centroid(key_pts_0_coord)
-    key_pts_1_centroid = imgproc.centroid(key_pts_1_coord)
+    # 5. Feature Detection
+    # Apply mask over ROI (top pin)
+    MASK_0_START = config.dev_mask_0['START']
+    MASK_0_FINISH = config.dev_mask_0['FINISH']
+    mask_0_rect = imgproc.draw_rect(MASK_0_START, MASK_0_FINISH)
+    key_pts_0_centroid, key_pts_0 = imgproc.extract_feature_centroid(cropped_img, mask_0_rect)
+
+    # Apply mask over ROI (bottom pin)
+    MASK_1_START = config.dev_mask_1['START']
+    MASK_1_FINISH = config.dev_mask_1['FINISH']
+    mask_1_rect = imgproc.draw_rect(MASK_1_START, MASK_1_FINISH)
+    key_pts_1_centroid, key_pts_1 = imgproc.extract_feature_centroid(cropped_img, mask_1_rect)
 
     if DEBUG:
         print(key_pts_0_centroid)
         print(key_pts_1_centroid)
+        out_img = imgproc.crop(input_img, crop_rect)
+        in_img = imgproc.crop(input_img, crop_rect)
+        key_pts_img = imgproc.keypts_img(in_img, out_img, key_pts_0 + key_pts_1)
+        plt.imshow(key_pts_img)
+        plt.title("keypoints")
+        plt.show()
 
+    # 6. Offset Calculation
+    # translate pixel data to mm by using a rigid key feature on the G120C FSAA (the product)
     # TODO:
-    #   - translate pixel to mm by using a rigid key feature on the G120C FSAA (the product)
     #   - find offset from reference datum as a float
 
     # Ranges of pixels for the 4 corners of the rigid feature (rectangle)
-    X_RANGE_LEFT = (400, 430)
-    X_RANGE_RIGHT = (1010, 1040)
-    Y_RANGE_TOP = (350, 380)
-    Y_RANGE_BOT = (610, 640)
+    X_RANGE_LEFT = config.dev_calibration_rect['X_RANGE_LEFT']
+    X_RANGE_RIGHT = config.dev_calibration_rect['X_RANGE_RIGHT']
+    Y_RANGE_TOP = config.dev_calibration_rect['Y_RANGE_TOP']
+    Y_RANGE_BOT = config.dev_calibration_rect['Y_RANGE_BOT']
+    loc, kp = imgproc.calibration_rect(cropped_img, X_RANGE_LEFT, X_RANGE_RIGHT, Y_RANGE_TOP, Y_RANGE_BOT)
+    scale = imgproc.find_scale(loc, col_const=33, row_const=14)
 
-    # Extract feature of top left corner
-    MASK_TOP_LEFT_START = (X_RANGE_LEFT[0], Y_RANGE_TOP[0])
-    MASK_TOP_LEFT_FINISH = (X_RANGE_LEFT[1], Y_RANGE_TOP[1])
-    mask_top_left_rect = rect(MASK_TOP_LEFT_START, MASK_TOP_LEFT_FINISH)
-    mask_top_left = imgproc.mask(cropped_img, mask_top_left_rect)
-    key_pts_top_left_coord, key_pts_top_left = imgproc.keypts(cropped_img, mask_top_left)
-    key_pts_top_left_centroid = imgproc.centroid(key_pts_top_left_coord)
-
-    # Extract feature of top right corner
-    MASK_TOP_RIGHT_START = (X_RANGE_RIGHT[0], Y_RANGE_TOP[0])
-    MASK_TOP_RIGHT_END = (X_RANGE_RIGHT[1], Y_RANGE_TOP[1])
-    mask_top_right_rect = rect(MASK_TOP_RIGHT_START, MASK_TOP_RIGHT_END)
-    mask_top_right = imgproc.mask(cropped_img, mask_top_right_rect)
-    key_pts_top_right_coord, key_pts_top_right = imgproc.keypts(cropped_img, mask_top_right)
-    key_pts_top_right_centroid = imgproc.centroid(key_pts_top_right_coord)
-
-    # Extract feature of bottom left corner
-    MASK_BOT_LEFT_START = (X_RANGE_LEFT[0], Y_RANGE_BOT[0])
-    MASK_BOT_LEFT_END = (X_RANGE_LEFT[1], Y_RANGE_BOT[1])
-    mask_bot_left_rect = rect(MASK_BOT_LEFT_START, MASK_BOT_LEFT_END)
-    mask_bot_left = imgproc.mask(cropped_img, mask_bot_left_rect)
-    key_pts_bot_left_coord, key_pts_bot_left = imgproc.keypts(cropped_img, mask_bot_left)
-    key_pts_bot_left_centroid = imgproc.centroid(key_pts_bot_left_coord)
-
-    # Extract feature of bottom right corner
-    MASK_BOT_RIGHT_START = (X_RANGE_RIGHT[0], Y_RANGE_BOT[0])
-    MASK_BOT_RIGHT_END = (X_RANGE_RIGHT[1], Y_RANGE_BOT[1])
-    mask_bot_right_rect = rect(MASK_BOT_RIGHT_START, MASK_BOT_RIGHT_END)
-    mask_bot_right = imgproc.mask(cropped_img, mask_bot_right_rect)
-    key_pts_bot_right_coord, key_pts_bot_right = imgproc.keypts(cropped_img, mask_bot_right)
-    key_pts_bot_right_centroid = imgproc.centroid(key_pts_bot_right_coord)
-
-    # Calculate the length of the two edges in pixels
-    top_edge = np.mean([(key_pts_top_right_centroid[0] - key_pts_top_left_centroid[0]),
-                    (key_pts_bot_right_centroid[0] - key_pts_bot_left_centroid[0])])
-    vert_edge = np.mean([(key_pts_bot_left_centroid[1] - key_pts_top_left_centroid[1]),
-                     (key_pts_bot_right_centroid[1] - key_pts_top_right_centroid[1])])
-
-    # Calculate the pixel per mm scale factor, top_edge = 33mm, vert_edge = 14mm
-    pix_per_mm_0 = top_edge / 33
-    pix_per_mm_1 = vert_edge / 14
-    pix_per_mm = np.mean([pix_per_mm_0, pix_per_mm_1])
 
     if DEBUG:
-        # input_img = file_handling.read_img(file_path)
-        cropped_img = imgproc.crop(input_img, crop_rect)
-        key_pts_img = imgproc.keypts_img(cropped_img, key_pts_top_left + key_pts_top_right + key_pts_bot_left + key_pts_bot_right)
+        print(f'pix_per_mm: {scale}')
+        in_img = imgproc.crop(input_img, crop_rect)
+        out_img = imgproc.crop(input_img, crop_rect)
+        key_pts_img = imgproc.keypts_img(in_img, out_img, kp)
         plt.imshow(key_pts_img)
+        plt.title("reference corners")
         plt.show()
 
     # 7. Robot control
-    robot_param.send()
+
+
     # TODO:
     #   - translate pixel offset to mm offset
     #   - return offset from reference datum as a float
@@ -140,16 +83,25 @@ if __name__ == '__main__':
         # TODO:
         #   - receive bool isReady flag from PLC when G120C FSAA is in place and clamped
         isReady = True
-
         if not isReady:
             continue
+
+        # Resets flag to False to prevent loop from starting unexpectedly in the next cycle
+        isReady = False
 
         # TODO: this section should be refactored to read files from temp memory
         #       when camera is connected in the production environment
 
         # img = img_capture()
 
+        # placeholder code for reading temporary images
         filepath = 'sample_files//input//original_img.jpg'
         input_img = cv.cvtColor(cv.imread(filepath), cv.COLOR_BGR2RGB)
-
         process(input_img)
+
+        # TODO: handshaking with the robot needs to be done
+        try:
+            robot_param.send()
+        except OSError:
+            break
+
