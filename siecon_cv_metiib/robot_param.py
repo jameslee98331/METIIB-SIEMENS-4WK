@@ -27,6 +27,9 @@ def send():
                 time.sleep(0.5)
                 c.send(b"(0.10,0.10,0.7)")
                 print("Send 0.05,0.00,0.00")
+                # TODO: change sleep and while loop to TimeOut
+                #  wait for a "received" string from the robot
+
         except socket.error as socketerror:
             print(count)
             c.close()

@@ -38,3 +38,70 @@ def mask(img: np.ndarray, corner: namedtuple) -> np.ndarray:
 # TODO: Manipulate contrast of the input image
 # def contrast():
 #     pass
+
+def keypts(img: np.ndarray, mask: np.ndarray) -> tuple:
+    """
+    Args:
+        img (np.ndarray): array of img for key point detection
+        mask (np.ndarray): array of mask for ROI
+
+    Returns:
+        tuple:
+            - list of tuples (row[i], col[i]) of keypoint locations
+            - list of keypoint objects
+    """
+
+    # Initiate ORB detector
+    orb = cv.ORB_create()
+
+    # find the keypoints with ORB
+    kp = orb.detect(img, mask)
+
+    # convert keypoint object to locations array
+    return cv.KeyPoint_convert(kp), kp
+
+
+def keypts_img(img: np.ndarray, key_points: cv.KeyPoint) -> np.ndarray:
+    """
+    Args:
+        img (np.ndarray): array of img for key point detection
+        key_points (cv.KeyPoint): list of keypoint objects
+
+    Returns:
+        img (np.ndarray): img input image overlaid with keypoints in green
+    """
+
+    # draw only keypoints location,not size and orientation
+    return cv.drawKeypoints(img, key_points, img, color=(0, 255, 0), flags=0)
+
+
+# TODO: optimisation needed
+def centroid(kp_coord: list) -> tuple:
+    """
+    Args:
+        kp_coord (list): list of tuples of keypoint locations
+
+    Returns:
+        tuple: mean location of keypoints (row, col)
+    """
+
+    x = [coord[0] for coord in kp_coord]
+    y = [coord[1] for coord in kp_coord]
+    return np.mean(x), np.mean(y)
+
+
+# TODO:
+# def find_scale(img, start, finish):
+#     pass
+#
+# def pixel_to_mm():
+#     pass
+
+
+
+
+def extract_feature_centroid():
+
+
+
+    pass
