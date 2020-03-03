@@ -72,7 +72,7 @@ def keypts(img: np.ndarray, mask: np.ndarray) -> tuple:
     return cv.KeyPoint_convert(kp), kp
 
 
-def keypts_img(input_img: np.ndarray, output_img: np.ndarray, key_points: cv.KeyPoint) -> np.ndarray:
+def keypts_img(img: np.ndarray, key_points: cv.KeyPoint) -> np.ndarray:
     """
     Args:
         img (np.ndarray): array of img for key point detection
@@ -83,10 +83,9 @@ def keypts_img(input_img: np.ndarray, output_img: np.ndarray, key_points: cv.Key
     """
 
     # draw only keypoints location,not size and orientation
-    return cv.drawKeypoints(input_img, key_points, output_img, color=(0, 255, 0), flags=0)
+    return cv.drawKeypoints(img, key_points, img, color=(0, 255, 0), flags=0)
 
 
-# TODO: optimisation needed
 def centroid(kp_coord: list) -> tuple:
     """
     Args:
@@ -97,8 +96,8 @@ def centroid(kp_coord: list) -> tuple:
     """
 
     x = [coord[0] for coord in kp_coord]
-    y = [coord[1] for coord in kp_coord]
-    return np.mean(x), np.mean(y)
+    z = [coord[1] for coord in kp_coord]
+    return np.mean(x), np.mean(z)
 
 
 def extract_feature_centroid(img: np.ndarray, mask_rect: namedtuple) -> tuple:
@@ -117,8 +116,20 @@ def extract_feature_centroid(img: np.ndarray, mask_rect: namedtuple) -> tuple:
     return centroid(kp_coord), kp
 
 
-def calibration_rect(cropped_img, X_RANGE_LEFT, X_RANGE_RIGHT, Y_RANGE_TOP, Y_RANGE_BOT):
+# TODO: This function needs some refactoring when in production environment
+def calibration_rect(cropped_img: np.ndarray, X_RANGE_LEFT: tuple, X_RANGE_RIGHT: tuple,
+                     Y_RANGE_TOP: tuple, Y_RANGE_BOT: tuple) -> tuple:
+    """
+    Args:
+        cropped_img:
+        X_RANGE_LEFT:
+        X_RANGE_RIGHT:
+        Y_RANGE_TOP:
+        Y_RANGE_BOT:
 
+    Returns:
+
+    """
     # Extract feature of top left corner
     MASK_TOP_LEFT_START = (X_RANGE_LEFT[0], Y_RANGE_TOP[0])
     MASK_TOP_LEFT_FINISH = (X_RANGE_LEFT[1], Y_RANGE_TOP[1])
@@ -148,23 +159,20 @@ def calibration_rect(cropped_img, X_RANGE_LEFT, X_RANGE_RIGHT, Y_RANGE_TOP, Y_RA
 
     return loc, kp
 
-def find_scale(loc, col_const, row_const):
+
+def find_scale(loc: list, col_const: float, row_const: float) -> np.ndarray:
+    """
+    Args:
+        loc:
+        col_const:
+        row_const:
+
+    Returns:
+    """
 
     # Calculate the length of the two edges in pixels
     top_edge = np.mean([(loc[1][0] - loc[0][0]), (loc[3][0] - loc[2][0])])
     vert_edge = np.mean([(loc[2][1] - loc[0][1]), (loc[3][1] - loc[1][1])])
 
     # Calculate the pixel per mm scale factor, top_edge = 33mm, vert_edge = 14mm
-    pix_per_mm_0 = top_edge / col_const
-    pix_per_mm_1 = vert_edge / row_const
-
-    return np.mean([pix_per_mm_0, pix_per_mm_1])
-
-
-
-# TODO:
-# def find_scale(img, start, finish):
-#     pass
-#
-# def pixel_to_mm():
-#     pass
+    return np.mean([top_edge / col_const, vert_edge / row_const], dtype=np.float64)

@@ -1,13 +1,17 @@
+import time
 import cv2 as cv
+import numpy as np
 import matplotlib.pyplot as plt
-import imgproc, robot_param, config
+import config
+import imgproc
+import robot_param
+# import img_capture
 
 DEBUG = True
 
 
 def process(input_img):
-    # 4. Pre-processing of Images
-
+    # 3. Pre-processing of Images
     # Crop image to include only the G120C FSAA in the image frame
     # THIS IS TO BE ADJUSTED WHEN THE VISION SYSTEM IS PUT INTO THE PRODUCTION ENVIRONMENT
     FRAME_START = config.dev_crop['START']
@@ -15,65 +19,75 @@ def process(input_img):
     crop_rect = imgproc.draw_rect(FRAME_START, FRAME_FINISH)
     cropped_img = imgproc.crop(input_img, crop_rect)
 
-    if DEBUG:
-        plt.imshow(cropped_img)
-        plt.title("cropped image")
-        plt.show()
-
-    # 5. Feature Detection
-    # Apply mask over ROI (top pin)
-    MASK_0_START = config.dev_mask_0['START']
-    MASK_0_FINISH = config.dev_mask_0['FINISH']
-    mask_0_rect = imgproc.draw_rect(MASK_0_START, MASK_0_FINISH)
-    key_pts_0_centroid, key_pts_0 = imgproc.extract_feature_centroid(cropped_img, mask_0_rect)
-
-    # Apply mask over ROI (bottom pin)
-    MASK_1_START = config.dev_mask_1['START']
-    MASK_1_FINISH = config.dev_mask_1['FINISH']
-    mask_1_rect = imgproc.draw_rect(MASK_1_START, MASK_1_FINISH)
-    key_pts_1_centroid, key_pts_1 = imgproc.extract_feature_centroid(cropped_img, mask_1_rect)
-
-    if DEBUG:
-        print(key_pts_0_centroid)
-        print(key_pts_1_centroid)
-        out_img = imgproc.crop(input_img, crop_rect)
-        in_img = imgproc.crop(input_img, crop_rect)
-        key_pts_img = imgproc.keypts_img(in_img, out_img, key_pts_0 + key_pts_1)
-        plt.imshow(key_pts_img)
-        plt.title("keypoints")
-        plt.show()
-
-    # 6. Offset Calculation
-    # translate pixel data to mm by using a rigid key feature on the G120C FSAA (the product)
+    # 4. Camera Calibration
+    # Translate pixel data to mm by using a rigid key feature
     # TODO:
-    #   - find offset from reference datum as a float
+    #   - Views chequered board with known grid intervals
+    #   - calculates scale
+    # see https://www.learnopencv.com/camera-calibration-using-opencv/
 
-    # Ranges of pixels for the 4 corners of the rigid feature (rectangle)
+    # BELOW 8 LINES SHOULD BE REPLACED IN THE PRODUCTION ENVIRONMENT
+    # Ranges of pixels for the 4 corners of the rigid feature on the G120C FSAA (rectangle)
     X_RANGE_LEFT = config.dev_calibration_rect['X_RANGE_LEFT']
     X_RANGE_RIGHT = config.dev_calibration_rect['X_RANGE_RIGHT']
     Y_RANGE_TOP = config.dev_calibration_rect['Y_RANGE_TOP']
     Y_RANGE_BOT = config.dev_calibration_rect['Y_RANGE_BOT']
     loc, kp = imgproc.calibration_rect(cropped_img, X_RANGE_LEFT, X_RANGE_RIGHT, Y_RANGE_TOP, Y_RANGE_BOT)
     scale = imgproc.find_scale(loc, col_const=33, row_const=14)
+    reference_location = loc[0]
 
+    # 5. Feature Detection
+    # Apply mask over ROI (L1)
+    MASK_2_START = config.dev_mask_2['START']
+    MASK_2_FINISH = config.dev_mask_2['FINISH']
+    mask_2_rect = imgproc.draw_rect(MASK_2_START, MASK_2_FINISH)
+    key_pts_2_centroid, key_pts_2 = imgproc.extract_feature_centroid(cropped_img, mask_2_rect)
+
+    # Apply mask over ROI (L2N)
+    MASK_3_START = config.dev_mask_3['START']
+    MASK_3_FINISH = config.dev_mask_3['FINISH']
+    mask_3_rect = imgproc.draw_rect(MASK_3_START, MASK_3_FINISH)
+    key_pts_3_centroid, key_pts_3 = imgproc.extract_feature_centroid(cropped_img, mask_3_rect)
+
+    # Apply mask over ROI (L3)
+    MASK_4_START = config.dev_mask_4['START']
+    MASK_4_FINISH = config.dev_mask_4['FINISH']
+    mask_4_rect = imgproc.draw_rect(MASK_4_START, MASK_4_FINISH)
+    key_pts_4_centroid, key_pts_4 = imgproc.extract_feature_centroid(cropped_img, mask_4_rect)
+
+    # Apply mask over ROI (GROUND)
+    MASK_5_START = config.dev_mask_5['START']
+    MASK_5_FINISH = config.dev_mask_5['FINISH']
+    mask_5_rect = imgproc.draw_rect(MASK_5_START, MASK_5_FINISH)
+    key_pts_5_centroid, key_pts_5 = imgproc.extract_feature_centroid(cropped_img, mask_5_rect)
 
     if DEBUG:
-        print(f'pix_per_mm: {scale}')
-        in_img = imgproc.crop(input_img, crop_rect)
-        out_img = imgproc.crop(input_img, crop_rect)
-        key_pts_img = imgproc.keypts_img(in_img, out_img, kp)
-        plt.imshow(key_pts_img)
-        plt.title("reference corners")
-        plt.show()
+        kp = key_pts_2 + key_pts_3 + key_pts_4 + key_pts_5
+        kp_img = imgproc.keypts_img(cropped_img, kp)
+        cv.imwrite('sample_files//output//ORB_keypoints_4.jpg', kp_img)
 
-    # 7. Robot control
+    # 6. Offset Calculation
+    # Find pin L1
+    pin_2_loc = tuple(np.subtract(key_pts_2_centroid, reference_location))
+    pin_2_loc = tuple([x / scale for x in pin_2_loc])
+    # print(f'L1: {pin_2_loc[0]}mm across and {pin_2_loc[1]}mm down')
 
+    # Find pin L2N
+    pin_3_loc = tuple(np.subtract(key_pts_3_centroid, reference_location))
+    pin_3_loc = tuple([x / scale for x in pin_3_loc])
+    # print(f'L2N: {pin_3_loc[0]}mm across and {pin_3_loc[1]}mm down')
 
-    # TODO:
-    #   - translate pixel offset to mm offset
-    #   - return offset from reference datum as a float
-    #   - beware of infinite loop
-    #   - potential to use a IOT2020/2040 to run this code/ communicate with the
+    # Find pin L3
+    pin_4_loc = tuple(np.subtract(key_pts_4_centroid, reference_location))
+    pin_4_loc = tuple([x / scale for x in pin_4_loc])
+    # print(f'L3: {pin_4_loc[0]}mm across and {pin_4_loc[1]}mm down')
+
+    # Find pin GROUND
+    pin_5_loc = tuple(np.subtract(key_pts_5_centroid, reference_location))
+    pin_5_loc = tuple([x / scale for x in pin_5_loc])
+    # print(f'GROUND: {pin_5_loc[0]}mm across and {pin_5_loc[1]}mm down')
+
+    return (pin_2_loc[0]/1000, pin_2_loc[1]/1000, np.arctan((pin_2_loc[0]-pin_5_loc[0])/(pin_2_loc[1]-pin_5_loc[1]))), kp_img
 
 
 if __name__ == '__main__':
@@ -81,27 +95,43 @@ if __name__ == '__main__':
     while True:
         # 1. Integration with Automation System
         # TODO:
-        #   - receive bool isReady flag from PLC when G120C FSAA is in place and clamped
-        isReady = True
-        if not isReady:
+        #   - code to communicate with PLC and asks for clamp status
+        #   - receive bool isClamp flag from PLC when G120C FSAA is in place and clamped
+        # e.g. isClamped = plc.request_status()
+        isClamped = True
+        if not isClamped:
             continue
 
-        # Resets flag to False to prevent loop from starting unexpectedly in the next cycle
-        isReady = False
+        # 2. Image capture
+        # TODO: This line should be used instead in the production environment:
+        #   input_img = img_capture.img_capture()
 
-        # TODO: this section should be refactored to read files from temp memory
-        #       when camera is connected in the production environment
-
-        # img = img_capture()
-
-        # placeholder code for reading temporary images
+        # Placeholder code for reading temporary images for demo
         filepath = 'sample_files//input//original_img.jpg'
         input_img = cv.cvtColor(cv.imread(filepath), cv.COLOR_BGR2RGB)
-        process(input_img)
 
-        # TODO: handshaking with the robot needs to be done
-        try:
-            robot_param.send()
-        except OSError:
-            break
+        # 3. to 6.
+        offset, kp_img = process(input_img)
+        print(offset)
+        plt.imshow(kp_img)
+        plt.show()
 
+        # 6. Robot control
+        # TODO:
+        #   - beware of infinite loop
+        #   - potential to use a IOT2020/2040 to run this code/ communicate with the
+
+        while True:
+            try:
+                robot_param.send(offset)
+                break
+            except OSError:
+                continue
+
+        while isClamped:
+            # 1. Integration with Automation System
+            # TODO:
+            #   - receive bool isClamped flag from PLC to check if G120C FSAA is STILL in place and clamped
+            #   - wait until isClamped is False (G120C FSAA has departed)
+            # e.g. isClamped = plc.request_status()
+            time.sleep(0.1)

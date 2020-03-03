@@ -3,13 +3,18 @@ import socket
 import time
 
 
-def send():
+def send(offset: tuple):
+    x_lin_off = str(offset[0])
+    z_lin_off = str(offset[1])
+    y_rot_off = str(offset[2])
+    send_string = f'({x_lin_off}, {z_lin_off}, {y_rot_off})'.encode('utf-8')
+
     HOST = "192.168.0.10"  # The remote host
     PORT = 30000  # The same port as used by the server
     print("Starting Program")
-    count = 0
 
-    while (count < 1000):
+    # TODO: change sleep and while loop to TimeOut
+    while True:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         s.bind((HOST, PORT))  # Bind to the port
@@ -20,19 +25,17 @@ def send():
             print(msg)
             time.sleep(1)
             if msg == b"asking_for_data":
-                count = count + 1
-                print("The count is:", count)
                 time.sleep(0.5)
                 print("")
                 time.sleep(0.5)
-                c.send(b"(0.10,0.10,0.7)")
-                print("Send 0.05,0.00,0.00")
-                # TODO: change sleep and while loop to TimeOut
-                #  wait for a "received" string from the robot
-
-        except socket.error as socketerror:
-            print(count)
-            c.close()
-            s.close()
+                c.send(send_string)
+                print(f'Send {x_lin_off}, {z_lin_off}, {y_rot_off}')
+                break
+        except:
+            with socket.error as socketerror:
+                print(socketerror)
+                c.close()
+                s.close()
+                continue
 
     print("Program finish")
