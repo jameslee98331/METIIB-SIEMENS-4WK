@@ -7,8 +7,6 @@ import imgproc
 import robot_param
 # import img_capture
 
-DEBUG = True
-
 
 def process(input_img):
     # 3. Pre-processing of Images
@@ -61,37 +59,31 @@ def process(input_img):
     mask_5_rect = imgproc.draw_rect(MASK_5_START, MASK_5_FINISH)
     key_pts_5_centroid, key_pts_5 = imgproc.extract_feature_centroid(cropped_img, mask_5_rect)
 
-    if DEBUG:
-        kp = key_pts_2 + key_pts_3 + key_pts_4 + key_pts_5
-        kp_img = imgproc.keypts_img(cropped_img, kp)
-        cv.imwrite('sample_files//output//ORB_keypoints_4.jpg', kp_img)
+    kp = key_pts_2 + key_pts_3 + key_pts_4 + key_pts_5
+    kp_img = imgproc.keypts_img(cropped_img, kp)
+    cv.imwrite('sample_files//output//ORB_keypoints_4.jpg', kp_img)
 
     # 6. Offset Calculation
     # Find pin L1
     pin_2_loc = tuple(np.subtract(key_pts_2_centroid, reference_location))
     pin_2_loc = tuple([x / scale for x in pin_2_loc])
-    # print(f'L1: {pin_2_loc[0]}mm across and {pin_2_loc[1]}mm down')
 
     # Find pin L2N
     pin_3_loc = tuple(np.subtract(key_pts_3_centroid, reference_location))
     pin_3_loc = tuple([x / scale for x in pin_3_loc])
-    # print(f'L2N: {pin_3_loc[0]}mm across and {pin_3_loc[1]}mm down')
 
     # Find pin L3
     pin_4_loc = tuple(np.subtract(key_pts_4_centroid, reference_location))
     pin_4_loc = tuple([x / scale for x in pin_4_loc])
-    # print(f'L3: {pin_4_loc[0]}mm across and {pin_4_loc[1]}mm down')
 
     # Find pin GROUND
     pin_5_loc = tuple(np.subtract(key_pts_5_centroid, reference_location))
     pin_5_loc = tuple([x / scale for x in pin_5_loc])
-    # print(f'GROUND: {pin_5_loc[0]}mm across and {pin_5_loc[1]}mm down')
 
     return (pin_2_loc[0]/1000, pin_2_loc[1]/1000, np.arctan((pin_2_loc[0]-pin_5_loc[0])/(pin_2_loc[1]-pin_5_loc[1]))), kp_img
 
 
 if __name__ == '__main__':
-
     while True:
         # 1. Integration with Automation System
         # TODO:
@@ -103,8 +95,8 @@ if __name__ == '__main__':
             continue
 
         # 2. Image capture
-        # TODO: This line should be used instead in the production environment:
-        #   input_img = img_capture.img_capture()
+        # FOLLOWING LINE SHOULD BE USED INSTEAD IN THE PRODUCTION ENVIRONMENT:
+        # input_img = img_capture.img_capture()
 
         # Placeholder code for reading temporary images for demo
         filepath = 'sample_files//input//original_img.jpg'
@@ -116,7 +108,7 @@ if __name__ == '__main__':
         plt.imshow(kp_img)
         plt.show()
 
-        # 6. Robot control
+        # 7. Robot control
         # TODO:
         #   - beware of infinite loop
         #   - potential to use a IOT2020/2040 to run this code/ communicate with the
