@@ -12,8 +12,8 @@ def process(input_img):
     # 3. Pre-processing of Images
     # Crop image to include only the G120C FSAA in the image frame
     # THIS IS TO BE ADJUSTED WHEN THE VISION SYSTEM IS PUT INTO THE PRODUCTION ENVIRONMENT
-    FRAME_START = config.dev_crop['START']
-    FRAME_FINISH = config.dev_crop['FINISH']
+    FRAME_START = config.demo_crop['START']
+    FRAME_FINISH = config.demo_crop['FINISH']
     crop_rect = imgproc.draw_rect(FRAME_START, FRAME_FINISH)
     cropped_img = imgproc.crop(input_img, crop_rect)
 
@@ -26,36 +26,36 @@ def process(input_img):
 
     # BELOW 8 LINES SHOULD BE REPLACED IN THE PRODUCTION ENVIRONMENT
     # Ranges of pixels for the 4 corners of the rigid feature on the G120C FSAA (rectangle)
-    X_RANGE_LEFT = config.dev_calibration_rect['X_RANGE_LEFT']
-    X_RANGE_RIGHT = config.dev_calibration_rect['X_RANGE_RIGHT']
-    Y_RANGE_TOP = config.dev_calibration_rect['Y_RANGE_TOP']
-    Y_RANGE_BOT = config.dev_calibration_rect['Y_RANGE_BOT']
+    X_RANGE_LEFT = config.demo_calibration_rect['X_RANGE_LEFT']
+    X_RANGE_RIGHT = config.demo_calibration_rect['X_RANGE_RIGHT']
+    Y_RANGE_TOP = config.demo_calibration_rect['Y_RANGE_TOP']
+    Y_RANGE_BOT = config.demo_calibration_rect['Y_RANGE_BOT']
     loc, kp = imgproc.calibration_rect(cropped_img, X_RANGE_LEFT, X_RANGE_RIGHT, Y_RANGE_TOP, Y_RANGE_BOT)
     scale = imgproc.find_scale(loc, col_const=33, row_const=14)
     reference_location = loc[0]
 
     # 5. Feature Detection
     # Apply mask over ROI (L1)
-    MASK_2_START = config.dev_mask_2['START']
-    MASK_2_FINISH = config.dev_mask_2['FINISH']
+    MASK_2_START = config.demo_mask_2['START']
+    MASK_2_FINISH = config.demo_mask_2['FINISH']
     mask_2_rect = imgproc.draw_rect(MASK_2_START, MASK_2_FINISH)
     key_pts_2_centroid, key_pts_2 = imgproc.extract_feature_centroid(cropped_img, mask_2_rect)
 
     # Apply mask over ROI (L2N)
-    MASK_3_START = config.dev_mask_3['START']
-    MASK_3_FINISH = config.dev_mask_3['FINISH']
+    MASK_3_START = config.demo_mask_3['START']
+    MASK_3_FINISH = config.demo_mask_3['FINISH']
     mask_3_rect = imgproc.draw_rect(MASK_3_START, MASK_3_FINISH)
     key_pts_3_centroid, key_pts_3 = imgproc.extract_feature_centroid(cropped_img, mask_3_rect)
 
     # Apply mask over ROI (L3)
-    MASK_4_START = config.dev_mask_4['START']
-    MASK_4_FINISH = config.dev_mask_4['FINISH']
+    MASK_4_START = config.demo_mask_4['START']
+    MASK_4_FINISH = config.demo_mask_4['FINISH']
     mask_4_rect = imgproc.draw_rect(MASK_4_START, MASK_4_FINISH)
     key_pts_4_centroid, key_pts_4 = imgproc.extract_feature_centroid(cropped_img, mask_4_rect)
 
     # Apply mask over ROI (GROUND)
-    MASK_5_START = config.dev_mask_5['START']
-    MASK_5_FINISH = config.dev_mask_5['FINISH']
+    MASK_5_START = config.demo_mask_5['START']
+    MASK_5_FINISH = config.demo_mask_5['FINISH']
     mask_5_rect = imgproc.draw_rect(MASK_5_START, MASK_5_FINISH)
     key_pts_5_centroid, key_pts_5 = imgproc.extract_feature_centroid(cropped_img, mask_5_rect)
 
