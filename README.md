@@ -6,7 +6,7 @@ Siemens is a German multinational manufacturer founded in 1847. Siemens Motion C
 ## Project Background
 Siemens Motion Control produce motor drives which can be used to control the speed and a variety of electric motors. These range in size from the G120C FSAA to the G120X. The G120C FSAA, makes up 73% of the units produced and tested in value stream 1 and is the highest volume unit produced on site.
 
-This project, part of the Cambridge Manufacturing Engineering Tripos IIB course, aiming to automate the product testing process of the G120C FSAA.
+This project, part of the Cambridge Manufacturing Engineering Tripos IIB course, aims to automate the product testing process of the G120C FSAA.
 
 ## Automation System Concept Design
 ### Overall System Flowchart
