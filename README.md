@@ -8,12 +8,7 @@
 
 ## The Cable Insertion Challenge
 ### Image Processing Implementation Flowchart
-<img .center {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 50%;
-} src="https://github.com/jameslee98331/METIIB-SIEMENS-4WK/blob/master/flowchart.png" alt="Image Processing implementation flowchart" height="500">
+<img src="https://github.com/jameslee98331/METIIB-SIEMENS-4WK/blob/master/flowchart.png" alt="Image Processing implementation flowchart" height="500">
 
 ## Experimentation with Universal Robots
 ### Example Results
