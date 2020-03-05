@@ -1,21 +1,15 @@
 import cv2 as cv
 
 
-def img_capture():
-    video_capture = cv.VideoCapture(0)
+def img_capture(vid_cap):
+    video_capture = vid_cap
 
-    try:
-        # Read picture. ret === True on success
-        ret, frame = video_capture.read()
-        frame = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
-        return frame
+    # Read picture. ret === True on success
+    ret, frame = video_capture.read()
+    frame = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
 
-    except:
-        # Check success
-        if not video_capture.isOpened():
-            return False
+    # Check success
+    if not ret:
+        raise Exception("Camera not connected")
 
-    finally:
-        # Close device
-        video_capture.release()
-        cv.destroyAllWindows()
+    return frame
