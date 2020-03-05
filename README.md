@@ -3,7 +3,12 @@
 ## Project Overview
 
 ## Automation System Concept Design
+### Overall System Flowchart
+!["Overall System Flowchart"]()
 
 
-## Image Processing Implementation Flowchart
+## The Cable Insertion Challenge
+### Image Processing Implementation Flowchart
 !["Image Processing implementation flowchart"](https://github.com/jameslee98331/METIIB-SIEMENS-4WK/blob/master/flowchart.png)
+
+## Experimentation with Universal Robots
