@@ -102,13 +102,12 @@ def centroid(kp_coord: list) -> tuple:
 
 def extract_feature_centroid(img: np.ndarray, mask_rect: namedtuple) -> tuple:
     """
-
     Args:
-        img:
-        mask_rect:
+        img (np.ndarray): preprocessed image for feature detection
+        mask_rect: ROI for feature detection
 
     Returns:
-
+        tuple: (centroid of feature keypoints in (x,y), key point objects)
     """
 
     mask = draw_mask(img, mask_rect)
@@ -121,15 +120,16 @@ def calibration_rect(cropped_img: np.ndarray, X_RANGE_LEFT: tuple, X_RANGE_RIGHT
                      Y_RANGE_TOP: tuple, Y_RANGE_BOT: tuple) -> tuple:
     """
     Args:
-        cropped_img:
-        X_RANGE_LEFT:
-        X_RANGE_RIGHT:
-        Y_RANGE_TOP:
-        Y_RANGE_BOT:
+        cropped_img (ndarray): cropped image for calibration
+        X_RANGE_LEFT (tuple): range of col indices for left vertical edge
+        X_RANGE_RIGHT (tuple): range of col indices for right vertical edge
+        Y_RANGE_TOP (tuple): range of row indices for top horizontal edge
+        Y_RANGE_BOT (tuple): range of row indices for bottom horizontal edge
 
     Returns:
-
+        tuple: (list of tuples of calibration coordinates in (x,y), key point objects)
     """
+
     # Extract feature of top left corner
     MASK_TOP_LEFT_START = (X_RANGE_LEFT[0], Y_RANGE_TOP[0])
     MASK_TOP_LEFT_FINISH = (X_RANGE_LEFT[1], Y_RANGE_TOP[1])
@@ -160,14 +160,16 @@ def calibration_rect(cropped_img: np.ndarray, X_RANGE_LEFT: tuple, X_RANGE_RIGHT
     return loc, kp
 
 
+# TODO: This function needs some refactoring when in production environment
 def find_scale(loc: list, col_const: float, row_const: float) -> np.ndarray:
     """
     Args:
-        loc:
-        col_const:
-        row_const:
+        loc (list): list of 4 corner coordinates in tuples (x,y)
+        col_const (float): length of horizontal feature in mm
+        row_const (float): length of vertical feature in mm
 
     Returns:
+        np.ndarray: scale factor converting from pixels to mm
     """
 
     # Calculate the length of the two edges in pixels
