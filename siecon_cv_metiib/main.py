@@ -84,19 +84,29 @@ def process(input_img):
 
 
 if __name__ == '__main__':
+    # FOLLOWING LINE SHOULD BE USED INSTEAD IN THE PRODUCTION ENVIRONMENT:
+    # Initialise cameras
+    # camera = 0
+    # video_capture = cv.VideoCapture(camera)
+
     while True:
         # 1. Integration with Automation System
         # TODO:
         #   - code to communicate with PLC and asks for clamp status
-        #   - receive bool isClamp flag from PLC when G120C FSAA is in place and clamped
+        #   - receive bool isClamp flag from PLC when new G120C FSAA is in place and clamped
         # e.g. isClamped = plc.request_status()
+
+        # Placeholder code for assuming product is clamped
         isClamped = True
+
         if not isClamped:
             continue
 
+        isClamped = False
+
         # 2. Image capture
         # FOLLOWING LINE SHOULD BE USED INSTEAD IN THE PRODUCTION ENVIRONMENT:
-        # input_img = img_capture.img_capture()
+        # input_img = img_capture.img_capture(video_capture)
 
         # Placeholder code for reading temporary images for demo
         filepath = 'sample_files//input//original_img.jpg'
@@ -104,9 +114,6 @@ if __name__ == '__main__':
 
         # 3. to 6.
         offset, kp_img = process(input_img)
-        print(offset)
-        plt.imshow(kp_img)
-        plt.show()
 
         # 7. Robot control
         # TODO:
@@ -120,10 +127,6 @@ if __name__ == '__main__':
             except OSError:
                 continue
 
-        while isClamped:
-            # 1. Integration with Automation System
-            # TODO:
-            #   - receive bool isClamped flag from PLC to check if G120C FSAA is STILL in place and clamped
-            #   - wait until isClamped is False (G120C FSAA has departed)
-            # e.g. isClamped = plc.request_status()
-            time.sleep(0.1)
+    # FOLLOWING LINE SHOULD BE USED INSTEAD IN THE PRODUCTION ENVIRONMENT:
+    # Close connection to camera device
+    # video_capture.release()
