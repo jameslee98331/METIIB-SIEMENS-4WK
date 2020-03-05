@@ -12,7 +12,7 @@ This project, part of the Cambridge Manufacturing Engineering Tripos IIB course,
 ### Overall System Flowchart
 
 ### Concept Sketch
-<img src="https://github.com/jameslee98331/METIIB-SIEMENS-4WK/blob/master/system_render.JPG" alt="Automation System Concept Design" height="500">
+<img src="https://github.com/jameslee98331/METIIB-SIEMENS-4WK/blob/master/system_render.JPG" alt="Automation System Concept Design" height="300">
 
 ## The Cable Insertion Challenge
 ### Image Processing Implementation Flowchart
