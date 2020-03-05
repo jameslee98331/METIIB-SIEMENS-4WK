@@ -13,7 +13,7 @@
 ## Experimentation with Universal Robots
 ### Example Results
 #### Calibration Rectangle
-<img src="https://github.com/jameslee98331/METIIB-SIEMENS-4WK/blob/master/siecon_cv_metiib/sample_files/output/ORB_calib_keypoints_1.jpg", alt="Calibration Rectangle" height="150">
+<img src="https://github.com/jameslee98331/METIIB-SIEMENS-4WK/blob/master/siecon_cv_metiib/sample_files/output/ORB_calib_keypoints_1.jpg" alt="Calibration Rectangle" height="150">
 !["Image Processing implementation flowchart"](https://github.com/jameslee98331/METIIB-SIEMENS-4WK/blob/master/siecon_cv_metiib/sample_files/output/ORB_calib_keypoints_1.jpg){width=10%}
 #### Top Right Socket
 !["Image Processing implementation flowchart"](https://github.com/jameslee98331/METIIB-SIEMENS-4WK/blob/master/siecon_cv_metiib/sample_files/output/ORB_keypoints_1.jpg){width=10%}
