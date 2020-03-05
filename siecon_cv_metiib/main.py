@@ -1,7 +1,5 @@
-import time
 import cv2 as cv
 import numpy as np
-import matplotlib.pyplot as plt
 import config
 import imgproc
 import robot_param
@@ -126,6 +124,11 @@ if __name__ == '__main__':
                 break
             except OSError:
                 continue
+
+        # If the entire testing process is complete, exit the while loop
+        isComplete = False
+        if isComplete:
+            break
 
     # FOLLOWING LINE SHOULD BE USED INSTEAD IN THE PRODUCTION ENVIRONMENT:
     # Close connection to camera device
