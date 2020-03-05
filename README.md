@@ -1,11 +1,11 @@
 # University of Cambridge MET IIB - Siemens Motion Control Congleton 4 Week Project
 
-## Overview
-### Company Background
+## Company Background
 Siemens is a German multinational manufacturer founded in 1847. Siemens Motion Control, based in Congleton, manufactures variable speed drives used to control electric motors. Industry 4.0 has been a key focus for Siemens, with large investments being made into automation, Digitalisation and Electrification outlined in the “Vision 2020” strategy (Siemens, 2020).
 
-### Project Background
+## Project Background
 Siemens Motion Control produce motor drives which can be used to control the speed and a variety of electric motors. These range in size from the G120C FSAA to the G120X. The G120C FSAA, makes up 73% of the units produced and tested in value stream 1 and is the highest volume unit produced on site.
+This is an industrial project, part of the Cambridge Manufacturing Engineering Tripos IIB course, aiming to automate the product testing process of the G120C FSAA.
 
 ## Automation System Concept Design
 ### Overall System Flowchart
