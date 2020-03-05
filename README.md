@@ -13,10 +13,10 @@
 ## Experimentation with Universal Robots
 ### Example Results
 #### Calibration Rectangle
-<img src="https://github.com/jameslee98331/METIIB-SIEMENS-4WK/blob/master/siecon_cv_metiib/sample_files/output/ORB_calib_keypoints_1.jpg" alt="Calibration Rectangle" height="150">
+<img src="https://github.com/jameslee98331/METIIB-SIEMENS-4WK/blob/master/siecon_cv_metiib/sample_files/output/ORB_calib_keypoints_1.jpg" alt="Calibration Rectangle" class="center" height="150">
 
 #### Top Right Socket
-<img src="https://github.com/jameslee98331/METIIB-SIEMENS-4WK/blob/master/siecon_cv_metiib/sample_files/output/ORB_keypoints_1.jpg" alt="Top Right Socket" height="150">
+<img src="https://github.com/jameslee98331/METIIB-SIEMENS-4WK/blob/master/siecon_cv_metiib/sample_files/output/ORB_keypoints_1.jpg" alt="Top Right Socket" class="center" height="150">
 
 #### Top Left Socket
-<img src="https://github.com/jameslee98331/METIIB-SIEMENS-4WK/blob/master/siecon_cv_metiib/sample_files/output/ORB_keypoints_4.jpg" alt="Top Left Socket" height="150">
+<img src="https://github.com/jameslee98331/METIIB-SIEMENS-4WK/blob/master/siecon_cv_metiib/sample_files/output/ORB_keypoints_4.jpg" alt="Top Left Socket" class="center" height="150">
