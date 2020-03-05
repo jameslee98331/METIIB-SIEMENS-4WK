@@ -3,6 +3,7 @@ import numpy as np
 import config
 import imgproc
 import robot_param
+# FOLLOWING LINE SHOULD BE USED IN THE PRODUCTION ENVIRONMENT:
 # import img_capture
 
 
@@ -57,10 +58,6 @@ def process(input_img):
     mask_5_rect = imgproc.draw_rect(MASK_5_START, MASK_5_FINISH)
     key_pts_5_centroid, key_pts_5 = imgproc.extract_feature_centroid(cropped_img, mask_5_rect)
 
-    kp = key_pts_2 + key_pts_3 + key_pts_4 + key_pts_5
-    kp_img = imgproc.keypts_img(cropped_img, kp)
-    cv.imwrite('sample_files//output//ORB_keypoints_4.jpg', kp_img)
-
     # 6. Offset Calculation
     # Find pin L1
     pin_2_loc = tuple(np.subtract(key_pts_2_centroid, reference_location))
@@ -78,11 +75,11 @@ def process(input_img):
     pin_5_loc = tuple(np.subtract(key_pts_5_centroid, reference_location))
     pin_5_loc = tuple([x / scale for x in pin_5_loc])
 
-    return (pin_2_loc[0]/1000, pin_2_loc[1]/1000, np.arctan((pin_2_loc[0]-pin_5_loc[0])/(pin_2_loc[1]-pin_5_loc[1]))), kp_img
+    return (pin_2_loc[0]/1000, pin_2_loc[1]/1000, np.arctan((pin_2_loc[0]-pin_5_loc[0])/(pin_2_loc[1]-pin_5_loc[1])))
 
 
 if __name__ == '__main__':
-    # FOLLOWING LINE SHOULD BE USED INSTEAD IN THE PRODUCTION ENVIRONMENT:
+    # FOLLOWING LINE SHOULD BE USED IN THE PRODUCTION ENVIRONMENT:
     # Initialise cameras
     # camera = 0
     # video_capture = cv.VideoCapture(camera)
@@ -103,15 +100,15 @@ if __name__ == '__main__':
         isClamped = False
 
         # 2. Image capture
-        # FOLLOWING LINE SHOULD BE USED INSTEAD IN THE PRODUCTION ENVIRONMENT:
+        # FOLLOWING LINE SHOULD BE USED IN THE PRODUCTION ENVIRONMENT:
         # input_img = img_capture.img_capture(video_capture)
 
-        # Placeholder code for reading temporary images for demo
+        # PLACEHOLDER CODE FOR READING TEMPORARY IMAGES FOR DEMO PURPOSE
         filepath = 'sample_files//input//original_img.jpg'
         input_img = cv.cvtColor(cv.imread(filepath), cv.COLOR_BGR2RGB)
 
         # 3. to 6.
-        offset, kp_img = process(input_img)
+        offset = process(input_img)
 
         # 7. Robot control
         # TODO:
@@ -130,6 +127,6 @@ if __name__ == '__main__':
         if isComplete:
             break
 
-    # FOLLOWING LINE SHOULD BE USED INSTEAD IN THE PRODUCTION ENVIRONMENT:
+    # FOLLOWING LINE SHOULD BE USED IN THE PRODUCTION ENVIRONMENT:
     # Close connection to camera device
     # video_capture.release()
