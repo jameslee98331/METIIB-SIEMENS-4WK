@@ -81,8 +81,7 @@ def process(input_img):
 if __name__ == '__main__':
     # FOLLOWING LINE SHOULD BE USED IN THE PRODUCTION ENVIRONMENT:
     # Initialise cameras
-    # camera = 0
-    # video_capture = cv.VideoCapture(camera)
+    # video_capture = cv.VideoCapture(0)
 
     while True:
         # 1. Integration with Automation System
@@ -112,8 +111,7 @@ if __name__ == '__main__':
 
         # 7. Robot control
         # TODO:
-        #   - beware of infinite loop
-        #   - potential to use a IOT2020/2040 to run this code/ communicate with the
+        #   - potential to use a Siemens IOT2020/2040 to run this code/communicate with the PLC
 
         while True:
             try:
