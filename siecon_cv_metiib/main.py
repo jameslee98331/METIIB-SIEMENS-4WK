@@ -2,9 +2,11 @@ import cv2 as cv
 import numpy as np
 import config
 import imgproc
-import robot_param
-# FOLLOWING LINE SHOULD BE USED IN THE PRODUCTION ENVIRONMENT:
-# import img_capture
+import robot
+
+PROD = False
+if PROD:
+    import img_capture
 
 
 def process(input_img):
@@ -16,7 +18,7 @@ def process(input_img):
     crop_rect = imgproc.draw_rect(FRAME_START, FRAME_FINISH)
     cropped_img = imgproc.crop(input_img, crop_rect)
 
-    # 4. Camera Calibration
+    # 4. Reference Calibration
     # Translate pixel data to mm by using a rigid key feature
     # TODO:
     #   - Views chequered board with known grid intervals
@@ -30,58 +32,37 @@ def process(input_img):
     Y_RANGE_TOP = config.demo_calibration_rect['Y_RANGE_TOP']
     Y_RANGE_BOT = config.demo_calibration_rect['Y_RANGE_BOT']
     loc, kp = imgproc.calibration_rect(cropped_img, X_RANGE_LEFT, X_RANGE_RIGHT, Y_RANGE_TOP, Y_RANGE_BOT)
-    scale = imgproc.find_scale(loc, col_const=33, row_const=14)
-    reference_location = loc[0]
+    scale = imgproc.find_scale(loc, col_const=config.demo_scale_const['col'], row_const=config.demo_scale_const['row'])
+    # Taking top left corner of the rectangle as reference home location
+    reference_home = loc[0]
 
-    # 5. Feature Detection
-    # Apply mask over ROI (L1)
-    MASK_2_START = config.demo_mask_2['START']
-    MASK_2_FINISH = config.demo_mask_2['FINISH']
-    mask_2_rect = imgproc.draw_rect(MASK_2_START, MASK_2_FINISH)
-    key_pts_2_centroid, key_pts_2 = imgproc.extract_feature_centroid(cropped_img, mask_2_rect)
+    # 5. Feature Detection and Offset Calculation
+    soc = 'top_left_soc'
+    pins = config.demo_pins[soc]
+    key_pts_centroids = []
+    pin_coords = []
 
-    # Apply mask over ROI (L2N)
-    MASK_3_START = config.demo_mask_3['START']
-    MASK_3_FINISH = config.demo_mask_3['FINISH']
-    mask_3_rect = imgproc.draw_rect(MASK_3_START, MASK_3_FINISH)
-    key_pts_3_centroid, key_pts_3 = imgproc.extract_feature_centroid(cropped_img, mask_3_rect)
+    for pin in pins:
+        mask_start = config.demo_pin_mask[pin]['START']
+        mask_finish = config.demo_pin_mask[pin]['FINISH']
+        mask_rect = imgproc.draw_rect(mask_start, mask_finish)
+        key_pts_centroid, key_pts = imgproc.extract_feature_centroid(cropped_img, mask_rect)
+        pin_coord = [x / scale for x in np.subtract(key_pts_centroid, reference_home)]
+        key_pts_centroids.append(key_pts_centroid)
+        pin_coords.append(pin_coord)
 
-    # Apply mask over ROI (L3)
-    MASK_4_START = config.demo_mask_4['START']
-    MASK_4_FINISH = config.demo_mask_4['FINISH']
-    mask_4_rect = imgproc.draw_rect(MASK_4_START, MASK_4_FINISH)
-    key_pts_4_centroid, key_pts_4 = imgproc.extract_feature_centroid(cropped_img, mask_4_rect)
+    m_to_mm_scale = 1000
+    x_offset_lin = pin_coords[0][0]/m_to_mm_scale
+    z_offset_lin = pin_coords[0][1]/m_to_mm_scale
+    y_offset_rot = np.arctan((pin_coords[0][0]-pin_coords[-1][0])/(pin_coords[0][1]-pin_coords[-1][1]))
 
-    # Apply mask over ROI (GROUND)
-    MASK_5_START = config.demo_mask_5['START']
-    MASK_5_FINISH = config.demo_mask_5['FINISH']
-    mask_5_rect = imgproc.draw_rect(MASK_5_START, MASK_5_FINISH)
-    key_pts_5_centroid, key_pts_5 = imgproc.extract_feature_centroid(cropped_img, mask_5_rect)
-
-    # 6. Offset Calculation
-    # Find pin L1
-    pin_2_loc = tuple(np.subtract(key_pts_2_centroid, reference_location))
-    pin_2_loc = tuple([x / scale for x in pin_2_loc])
-
-    # Find pin L2N
-    pin_3_loc = tuple(np.subtract(key_pts_3_centroid, reference_location))
-    pin_3_loc = tuple([x / scale for x in pin_3_loc])
-
-    # Find pin L3
-    pin_4_loc = tuple(np.subtract(key_pts_4_centroid, reference_location))
-    pin_4_loc = tuple([x / scale for x in pin_4_loc])
-
-    # Find pin GROUND
-    pin_5_loc = tuple(np.subtract(key_pts_5_centroid, reference_location))
-    pin_5_loc = tuple([x / scale for x in pin_5_loc])
-
-    return (pin_2_loc[0]/1000, pin_2_loc[1]/1000, np.arctan((pin_2_loc[0]-pin_5_loc[0])/(pin_2_loc[1]-pin_5_loc[1])))
+    return x_offset_lin, z_offset_lin, y_offset_rot
 
 
 if __name__ == '__main__':
-    # FOLLOWING LINE SHOULD BE USED IN THE PRODUCTION ENVIRONMENT:
-    # Initialise cameras
-    # video_capture = cv.VideoCapture(0)
+    if PROD:
+        # Initialise cameras
+        video_capture = cv.VideoCapture(0)
 
     while True:
         # 1. Integration with Automation System
@@ -99,12 +80,13 @@ if __name__ == '__main__':
         isClamped = False
 
         # 2. Image capture
-        # FOLLOWING LINE SHOULD BE USED IN THE PRODUCTION ENVIRONMENT:
-        # input_img = img_capture.img_capture(video_capture)
+        if PROD:
+            input_img = img_capture.img_capture(video_capture)
 
         # PLACEHOLDER CODE FOR READING TEMPORARY IMAGES FOR DEMO PURPOSE
-        filepath = 'sample_files//input//original_img.jpg'
-        input_img = cv.cvtColor(cv.imread(filepath), cv.COLOR_BGR2RGB)
+        if not PROD:
+            filepath = 'sample_files//input//original_img.jpg'
+            input_img = cv.cvtColor(cv.imread(filepath), cv.COLOR_BGR2RGB)
 
         # 3. to 6.
         offset = process(input_img)
@@ -115,7 +97,7 @@ if __name__ == '__main__':
 
         while True:
             try:
-                robot_param.send(offset)
+                robot.send(offset)
                 break
             except OSError:
                 continue
@@ -125,6 +107,6 @@ if __name__ == '__main__':
         if isComplete:
             break
 
-    # FOLLOWING LINE SHOULD BE USED IN THE PRODUCTION ENVIRONMENT:
-    # Close connection to camera device
-    # video_capture.release()
+    if PROD:
+        # Close connection to camera device
+        video_capture.release()

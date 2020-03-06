@@ -173,8 +173,8 @@ def find_scale(loc: list, col_const: float, row_const: float) -> np.ndarray:
     """
 
     # Calculate the length of the two edges in pixels
-    top_edge = np.mean([(loc[1][0] - loc[0][0]), (loc[3][0] - loc[2][0])])
+    horizontal_edge = np.mean([(loc[1][0] - loc[0][0]), (loc[3][0] - loc[2][0])])
     vert_edge = np.mean([(loc[2][1] - loc[0][1]), (loc[3][1] - loc[1][1])])
 
     # Calculate the pixel per mm scale factor, top_edge = 33mm, vert_edge = 14mm
-    return np.mean([top_edge / col_const, vert_edge / row_const], dtype=np.float64)
+    return np.mean([horizontal_edge / col_const, vert_edge / row_const], dtype=np.float64)
