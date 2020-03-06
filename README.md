@@ -26,4 +26,5 @@ Calibration Rectangle|Top Right Socket|Top Left Socket
 
 ### Integration with UR3 Robot
 [Youtube Playlist](https://www.youtube.com/watch?v=Jgzx33S-dag&list=PLYTTtnjhUa9W1Uqdmo4yu7Gt5M1QhjdI6)
+
 [Universal Robots UR3](https://www.universal-robots.com/products/ur3-robot/)
