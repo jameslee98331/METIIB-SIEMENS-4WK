@@ -12,7 +12,7 @@ This project, part of the Cambridge Manufacturing Engineering Tripos IIB course,
 ### Concept Sketch
 Initial Concept | System Design Render
 :-------------------------:|:-------------------------:
-<img src="https://github.com/jameslee98331/METIIB-SIEMENS-4WK/blob/master/README_images/system_concept_sketch.JPG" alt="Automation System Concept Design" height="200"> | <img src="https://github.com/jameslee98331/METIIB-SIEMENS-4WK/blob/master/README_images/system_render.JPG" alt="Automation System Concept Design" height="200">
+<img src="https://github.com/jameslee98331/METIIB-SIEMENS-4WK/blob/master/README_images/system_concept_sketch.JPG" alt="Automation System Concept Design" height="250"> | <img src="https://github.com/jameslee98331/METIIB-SIEMENS-4WK/blob/master/README_images/system_render.JPG" alt="Automation System Concept Design" height="250">
 
 ### Overall System Flowchart
 
