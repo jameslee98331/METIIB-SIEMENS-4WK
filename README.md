@@ -20,11 +20,7 @@ This project, part of the Cambridge Manufacturing Engineering Tripos IIB course,
 
 ## Experimentation with Universal Robots
 ### Example Results
-#### Calibration Rectangle
-<img src="https://github.com/jameslee98331/METIIB-SIEMENS-4WK/blob/master/siecon_cv_metiib/sample_files/output/ORB_calib_keypoints_1.jpg" alt="Calibration Rectangle" height="250">
 
-#### Top Right Socket
-<img src="https://github.com/jameslee98331/METIIB-SIEMENS-4WK/blob/master/siecon_cv_metiib/sample_files/output/ORB_keypoints_1.jpg" alt="Top Right Socket" height="250">
-
-#### Top Left Socket
-<img src="https://github.com/jameslee98331/METIIB-SIEMENS-4WK/blob/master/siecon_cv_metiib/sample_files/output/ORB_keypoints_4.jpg" alt="Top Left Socket" height="250">
+Calibration Rectangle             |  Top Right Socket           |   To Left Socket      |
+:-------------------------:|:-------------------------: | :-------------------------:   |
+<img src="https://github.com/jameslee98331/METIIB-SIEMENS-4WK/blob/master/siecon_cv_metiib/sample_files/output/ORB_calib_keypoints_1.jpg" alt="Calibration Rectangle" height="250">   |  <img src="https://github.com/jameslee98331/METIIB-SIEMENS-4WK/blob/master/siecon_cv_metiib/sample_files/output/ORB_keypoints_1.jpg" alt="Top Right Socket" height="250"> |  <img src="https://github.com/jameslee98331/METIIB-SIEMENS-4WK/blob/master/siecon_cv_metiib/sample_files/output/ORB_keypoints_4.jpg" alt="Top Left Socket" height="250">  |
