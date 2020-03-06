@@ -9,10 +9,13 @@ Siemens Motion Control produce motor drives which can be used to control the spe
 This project, part of the Cambridge Manufacturing Engineering Tripos IIB course, aims to automate the product testing process of the G120C FSAA.
 
 ## Automation System Concept Design
+### Concept Sketch
+
+Initial Concept | System Design Render
+<img src="https://github.com/jameslee98331/METIIB-SIEMENS-4WK/blob/master/README_images/system_concept_sketch.JPG" alt="Automation System Concept Design" height="300"> | <img src="https://github.com/jameslee98331/METIIB-SIEMENS-4WK/blob/master/README_images/system_render.JPG" alt="Automation System Concept Design" height="300">
+
 ### Overall System Flowchart
 
-### Concept Sketch
-<img src="https://github.com/jameslee98331/METIIB-SIEMENS-4WK/blob/master/README_images/system_render.JPG" alt="Automation System Concept Design" height="300">
 
 ## The Cable Insertion Challenge
 ### Image Processing Implementation Flowchart
