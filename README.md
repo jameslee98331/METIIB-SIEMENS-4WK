@@ -19,8 +19,10 @@ This project, part of the Cambridge Manufacturing Engineering Tripos IIB course,
 <img src="https://github.com/jameslee98331/METIIB-SIEMENS-4WK/blob/master/README_images/flowchart.png" alt="Image Processing implementation flowchart" height="500">
 
 ## Experimentation with Universal Robots
-### Example Results
-
+### Result Images
 Calibration Rectangle|Top Right Socket|Top Left Socket
 :-------------------------:|:-------------------------: | :-------------------------:
 <img src="https://github.com/jameslee98331/METIIB-SIEMENS-4WK/blob/master/siecon_cv_metiib/sample_files/output/ORB_calib_keypoints_1.jpg" alt="Calibration Rectangle" height="500">   |  <img src="https://github.com/jameslee98331/METIIB-SIEMENS-4WK/blob/master/siecon_cv_metiib/sample_files/output/ORB_keypoints_1.jpg" alt="Top Right Socket" height="500"> |  <img src="https://github.com/jameslee98331/METIIB-SIEMENS-4WK/blob/master/siecon_cv_metiib/sample_files/output/ORB_keypoints_4.jpg" alt="Top Left Socket" height="500">
+
+### Integration with UR3 Robot
+Youtube Playlist: https://www.youtube.com/watch?v=Jgzx33S-dag&list=PLYTTtnjhUa9W1Uqdmo4yu7Gt5M1QhjdI6
