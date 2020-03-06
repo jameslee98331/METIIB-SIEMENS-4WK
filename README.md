@@ -15,7 +15,7 @@ Initial Concept | System Design Render
 <img src="https://github.com/jameslee98331/METIIB-SIEMENS-4WK/blob/master/README_images/system_concept_sketch.JPG" alt="Automation System Concept Design" height="200"> | <img src="https://github.com/jameslee98331/METIIB-SIEMENS-4WK/blob/master/README_images/system_render.JPG" alt="Automation System Concept Design" height="375">
 
 ### Overall System Flowchart
-
+<img src="https://github.com/jameslee98331/METIIB-SIEMENS-4WK/blob/master/README_images/main_sequence.png" alt="Automation System Concept Design" height="200">
 
 ## The Cable Insertion Challenge
 ### Image Processing Implementation Flowchart
