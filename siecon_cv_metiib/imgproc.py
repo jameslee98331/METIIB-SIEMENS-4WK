@@ -58,7 +58,7 @@ def keypts(img: np.ndarray, mask: np.ndarray) -> tuple:
 
     Returns:
         tuple:
-            - list of tuples (row[i], col[i]) of keypoint locations
+            - list of tuples (col[i], row[i]) of keypoint locations
             - list of keypoint objects
     """
 
@@ -68,7 +68,7 @@ def keypts(img: np.ndarray, mask: np.ndarray) -> tuple:
     # find the keypoints with ORB
     kp = orb.detect(img, mask)
 
-    # convert keypoint object to locations array
+    # convert keypoint object to locations array (column(x), row(y))
     return cv.KeyPoint_convert(kp), kp
 
 
@@ -92,7 +92,7 @@ def centroid(kp_coord: list) -> tuple:
         kp_coord (list): list of tuples of keypoint locations
 
     Returns:
-        tuple: mean location of keypoints (row, col)
+        tuple: mean location of keypoints (col, row)
     """
 
     x = [coord[0] for coord in kp_coord]
@@ -107,7 +107,9 @@ def extract_feature_centroid(img: np.ndarray, mask_rect: namedtuple) -> tuple:
         mask_rect: ROI for feature detection
 
     Returns:
-        tuple: (centroid of feature keypoints in (x,y), key point objects)
+        tuple:
+            - centroid (col, row) of keypoint locations
+            - list of keypoint objects
     """
 
     mask = draw_mask(img, mask_rect)
@@ -127,7 +129,9 @@ def calibration_rect(cropped_img: np.ndarray, x_range_left: tuple, x_range_right
         y_range_bot (tuple): range of row indices for bottom horizontal edge
 
     Returns:
-        tuple: (list of tuples of calibration coordinates in (x,y), key point objects)
+        tuple:
+            - namedtuple(top_left, top_right, bot_left, bot_right) of keypoint locations in (col[i], row[i])
+            - list of keypoint objects
     """
 
     # Extract feature of top left corner
