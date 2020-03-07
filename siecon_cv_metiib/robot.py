@@ -9,15 +9,19 @@ def send(offset: tuple):
     y_rot_off = str(offset[2])
     send_string = f'({x_lin_off}, {z_lin_off}, {y_rot_off})'.encode('utf-8')
 
-    HOST = "192.168.0.10"  # The remote host
-    PORT = 30000  # The same port as used by the server
+    host = "192.168.0.10"  # The remote host
+    port = 30000  # The same port as used by the server
 
     while True:
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        s.bind((HOST, PORT))  # Bind to the port
-        s.listen(5)  # Now wait for client connection.
-        c, addr = s.accept()  # Establish connection with client.
+        try:
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            s.bind((host, port))  # Bind to the port
+            s.listen(5)  # Now wait for client connection.
+            c, addr = s.accept()  # Establish connection with client.
+        except OSError:
+            continue
+
         try:
             msg = c.recv(1024)
             time.sleep(1)
@@ -26,7 +30,6 @@ def send(offset: tuple):
                 time.sleep(0.5)
                 c.send(send_string)
                 print(f'Send {x_lin_off}, {z_lin_off}, {y_rot_off}')
-                break
         except:
             with socket.error as socketerror:
                 print(socketerror)

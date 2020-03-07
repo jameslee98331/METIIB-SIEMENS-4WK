@@ -107,13 +107,7 @@ if __name__ == '__main__':
         # 7. Robot control
         # TODO:
         #   - potential to use a Siemens IOT2020/2040 to run this code/communicate with the PLC
-
-        while True:
-            try:
-                robot.send(offset)
-                break
-            except OSError:
-                continue
+        robot.send(offset)
 
         # If the entire testing process is complete, exit the while loop
         isComplete = True
