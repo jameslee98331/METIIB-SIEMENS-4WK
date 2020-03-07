@@ -6,18 +6,27 @@ import time
 def send(x_offset: float, z_offset: float, rotation: float) -> None:
     send_string = f'({x_offset}, {z_offset}, {rotation})'.encode('utf-8')
 
-    host = "192.168.0.10"  # The remote host
-    port = 30000  # The same port as used by the server
+    # The remote host
+    host = "192.168.0.10"
+    # The same port as used by the server
+    port = 30000
 
     while True:
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            s.bind((host, port))  # Bind to the port
-            s.listen(5)  # Now wait for client connection.
-            c, addr = s.accept()  # Establish connection with client.
+
+            # Bind to the port
+            s.bind((host, port))
+
+            # Now wait for client connection.
+            s.listen(5)
+
+            # Establish connection with client.
+            c, addr = s.accept()
+
         except OSError:
-            print('retry connection')
+            print('Retry Connection')
             continue
 
         try:
@@ -29,9 +38,9 @@ def send(x_offset: float, z_offset: float, rotation: float) -> None:
                 c.send(send_string)
                 print(f'Send {x_offset}, {z_offset}, {rotation}')
         except:
-            with socket.error as socketerror:
-                print(socketerror)
-                print('retry send')
+            with socket.error as socket_error:
+                print(socket_error)
+                print('Retry Send')
                 c.close()
                 s.close()
                 continue

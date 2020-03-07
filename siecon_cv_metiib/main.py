@@ -55,9 +55,9 @@ def process(input_image):
         pin_coords.append(pin_coord)
         key_pts_all.extend(key_pts)
 
-    x_offset = imgproc.mm_to_m(pin_coords[0][0])
-    z_offset = imgproc.mm_to_m(pin_coords[0][1])
-    rotation = imgproc.calc_img_rotation(pin_coords[0], pin_coords[-1])
+    x_off = imgproc.mm_to_m(pin_coords[0][0])
+    z_off = imgproc.mm_to_m(pin_coords[0][1])
+    rot = imgproc.calc_img_rotation(pin_coords[0], pin_coords[-1])
 
     if DEBUG:
         print(key_pts_centroids)
@@ -66,12 +66,13 @@ def process(input_image):
         kp_img = imgproc.keypts_img(cropped_img, key_pts_all)
         plt.imshow(kp_img)
         plt.show()
-        print((x_offset, z_offset, rotation))
+        print((x_off, z_off, rot))
 
-    return x_offset, z_offset, rotation
+    return x_off, z_off, rot
 
 
 if __name__ == '__main__':
+
     if not DEBUG:
         # Initialise cameras
         video_capture = cv.VideoCapture(0)
