@@ -4,18 +4,8 @@ venv/
 __pycache__/
 
 # directories
-misc/query
-misc/train
 misc/
 
 # Extra image files
-*img_cropped*
-*img_masked*
-*img_socket*
-*img_preproc_4.jpg
-*img_preproc_5.jpg
-*img_preproc_6.jpg
-*img_preproc_7.jpg
-*img_preproc_8.jpg
-*img_preproc_9.jpg
-*ORB_keypoints.jpg
+*.jpg
+*.psb
