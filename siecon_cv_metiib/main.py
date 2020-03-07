@@ -55,8 +55,8 @@ def process(input_image):
         pin_coords.append(pin_coord)
         key_pts_all.extend(key_pts)
 
-    x_offset_lin = imgproc.mm_to_m(pin_coords[0][0])
-    z_offset_lin = imgproc.mm_to_m(pin_coords[0][1])
+    x_offset = imgproc.mm_to_m(pin_coords[0][0])
+    z_offset = imgproc.mm_to_m(pin_coords[0][1])
     rotation = imgproc.calc_img_rotation(pin_coords[0], pin_coords[-1])
 
     if DEBUG:
@@ -66,9 +66,9 @@ def process(input_image):
         kp_img = imgproc.keypts_img(cropped_img, key_pts_all)
         plt.imshow(kp_img)
         plt.show()
-        print((x_offset_lin, z_offset_lin, rotation))
+        print((x_offset, z_offset, rotation))
 
-    return x_offset_lin, z_offset_lin, rotation
+    return x_offset, z_offset, rotation
 
 
 if __name__ == '__main__':
@@ -101,12 +101,12 @@ if __name__ == '__main__':
             input_img = cv.cvtColor(cv.imread(filepath), cv.COLOR_BGR2RGB)
 
         # 3. to 6.
-        x_offset_lin, z_offset_lin, rotation = process(input_img)
+        x_offset, z_offset, rotation = process(input_img)
 
         # 7. Robot control
         # TODO:
         #   - potential to use a Siemens IOT2020/2040 to run this code/communicate with the PLC
-        robot.send(x_offset_lin, z_offset_lin, rotation)
+        robot.send(x_offset, z_offset, rotation)
 
         # If the entire testing process is complete, exit the while loop
         isComplete = True

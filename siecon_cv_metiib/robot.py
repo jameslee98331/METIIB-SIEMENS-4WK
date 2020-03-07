@@ -3,8 +3,8 @@ import socket
 import time
 
 
-def send(x_offset_lin: float, z_offset_lin: float, rotation: float) -> None:
-    send_string = f'({x_offset_lin}, {z_offset_lin}, {rotation})'.encode('utf-8')
+def send(x_offset: float, z_offset: float, rotation: float) -> None:
+    send_string = f'({x_offset}, {z_offset}, {rotation})'.encode('utf-8')
 
     host = "192.168.0.10"  # The remote host
     port = 30000  # The same port as used by the server
@@ -27,7 +27,7 @@ def send(x_offset_lin: float, z_offset_lin: float, rotation: float) -> None:
                 print(msg)
                 time.sleep(0.5)
                 c.send(send_string)
-                print(f'Send {x_offset_lin}, {z_offset_lin}, {rotation}')
+                print(f'Send {x_offset}, {z_offset}, {rotation}')
         except:
             with socket.error as socketerror:
                 print(socketerror)
