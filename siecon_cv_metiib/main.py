@@ -55,9 +55,8 @@ def process(input_image):
         pin_coords.append(pin_coord)
         key_pts_all.extend(key_pts)
 
-    m_to_mm_scale = 0.001
-    x_offset_lin = pin_coords[0][0] * m_to_mm_scale
-    z_offset_lin = pin_coords[0][1] * m_to_mm_scale
+    x_offset_lin = imgproc.mm_to_m(pin_coords[0][0])
+    z_offset_lin = imgproc.mm_to_m(pin_coords[0][1])
     rotation = imgproc.calc_img_rotation(pin_coords[0], pin_coords[-1])
 
     if DEBUG:

@@ -194,3 +194,15 @@ def calc_img_rotation(first_pin: list, last_pin: list) -> float:
     """
 
     return np.arctan((first_pin[0] - last_pin[0]) / (last_pin[1] - first_pin[1]))
+
+def mm_to_m(pin_coord: float) -> float:
+    """
+    Args:
+        pin_coord (float): pin coordinate in millimeter
+
+    Returns:
+        float: pin coordinate in meter
+    """
+
+    # Converts mm to m
+    return pin_coord/1000
