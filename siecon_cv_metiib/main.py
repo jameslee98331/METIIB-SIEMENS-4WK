@@ -53,7 +53,7 @@ def process(input_image):
         pin_coord = [x / scale for x in np.subtract(key_pts_centroid, reference_home)]
         key_pts_centroids.append(key_pts_centroid)
         pin_coords.append(pin_coord)
-        key_pts_all += key_pts
+        key_pts_all.extend(key_pts)
 
     m_to_mm_scale = 0.001
     x_offset_lin = pin_coords[0][0] * m_to_mm_scale
@@ -102,12 +102,12 @@ if __name__ == '__main__':
             input_img = cv.cvtColor(cv.imread(filepath), cv.COLOR_BGR2RGB)
 
         # 3. to 6.
-        offset = process(input_img)
+        x_offset_lin, z_offset_lin, rotation = process(input_img)
 
         # 7. Robot control
         # TODO:
         #   - potential to use a Siemens IOT2020/2040 to run this code/communicate with the PLC
-        robot.send(offset)
+        robot.send(x_offset_lin, z_offset_lin, rotation)
 
         # If the entire testing process is complete, exit the while loop
         isComplete = True

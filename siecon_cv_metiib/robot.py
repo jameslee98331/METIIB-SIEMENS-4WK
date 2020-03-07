@@ -3,11 +3,8 @@ import socket
 import time
 
 
-def send(offset: tuple):
-    x_lin_off = str(offset[0])
-    z_lin_off = str(offset[1])
-    y_rot_off = str(offset[2])
-    send_string = f'({x_lin_off}, {z_lin_off}, {y_rot_off})'.encode('utf-8')
+def send(x_offset_lin: float, z_offset_lin: float, rotation: float) -> None:
+    send_string = f'({x_offset_lin}, {z_offset_lin}, {rotation})'.encode('utf-8')
 
     host = "192.168.0.10"  # The remote host
     port = 30000  # The same port as used by the server
@@ -20,6 +17,7 @@ def send(offset: tuple):
             s.listen(5)  # Now wait for client connection.
             c, addr = s.accept()  # Establish connection with client.
         except OSError:
+            print('retry connection')
             continue
 
         try:
@@ -29,10 +27,11 @@ def send(offset: tuple):
                 print(msg)
                 time.sleep(0.5)
                 c.send(send_string)
-                print(f'Send {x_lin_off}, {z_lin_off}, {y_rot_off}')
+                print(f'Send {x_offset_lin}, {z_offset_lin}, {rotation}')
         except:
             with socket.error as socketerror:
                 print(socketerror)
+                print('retry send')
                 c.close()
                 s.close()
                 continue
