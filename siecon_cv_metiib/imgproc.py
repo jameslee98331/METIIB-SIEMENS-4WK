@@ -131,27 +131,27 @@ def calibration_rect(cropped_img: np.ndarray, x_range_left: tuple, x_range_right
     """
 
     # Extract feature of top left corner
-    MASK_TOP_LEFT_START = (x_range_left[0], y_range_top[0])
-    MASK_TOP_LEFT_FINISH = (x_range_left[1], y_range_top[1])
-    mask_top_left_rect = draw_rect(MASK_TOP_LEFT_START, MASK_TOP_LEFT_FINISH)
+    mask_top_left_start = (x_range_left[0], y_range_top[0])
+    mask_top_left_finish = (x_range_left[1], y_range_top[1])
+    mask_top_left_rect = draw_rect(mask_top_left_start, mask_top_left_finish)
     key_pts_top_left_centroid, key_pts_top_left = extract_feature_centroid(cropped_img, mask_top_left_rect)
 
     # Extract feature of top right corner
-    MASK_TOP_RIGHT_START = (x_range_right[0], y_range_top[0])
-    MASK_TOP_RIGHT_END = (x_range_right[1], y_range_top[1])
-    mask_top_right_rect = draw_rect(MASK_TOP_RIGHT_START, MASK_TOP_RIGHT_END)
+    mask_top_right_start = (x_range_right[0], y_range_top[0])
+    mask_top_right_end = (x_range_right[1], y_range_top[1])
+    mask_top_right_rect = draw_rect(mask_top_right_start, mask_top_right_end)
     key_pts_top_right_centroid, key_pts_top_right = extract_feature_centroid(cropped_img, mask_top_right_rect)
 
     # Extract feature of bottom left corner
-    MASK_BOT_LEFT_START = (x_range_left[0], y_range_bot[0])
-    MASK_BOT_LEFT_END = (x_range_left[1], y_range_bot[1])
-    mask_bot_left_rect = draw_rect(MASK_BOT_LEFT_START, MASK_BOT_LEFT_END)
+    mask_bot_left_start = (x_range_left[0], y_range_bot[0])
+    mask_bot_left_end = (x_range_left[1], y_range_bot[1])
+    mask_bot_left_rect = draw_rect(mask_bot_left_start, mask_bot_left_end)
     key_pts_bot_left_centroid, key_pts_bot_left = extract_feature_centroid(cropped_img, mask_bot_left_rect)
 
     # Extract feature of bottom right corner
-    MASK_BOT_RIGHT_START = (x_range_right[0], y_range_bot[0])
-    MASK_BOT_RIGHT_END = (x_range_right[1], y_range_bot[1])
-    mask_bot_right_rect = draw_rect(MASK_BOT_RIGHT_START, MASK_BOT_RIGHT_END)
+    mask_bot_right_start = (x_range_right[0], y_range_bot[0])
+    mask_bot_right_end = (x_range_right[1], y_range_bot[1])
+    mask_bot_right_rect = draw_rect(mask_bot_right_start, mask_bot_right_end)
     key_pts_bot_right_centroid, key_pts_bot_right = extract_feature_centroid(cropped_img, mask_bot_right_rect)
 
     rect_corner_coords = namedtuple('rect_corner_coords', 'top_left, top_right, bot_left, bot_right')
