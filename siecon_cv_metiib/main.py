@@ -22,7 +22,7 @@ def process(input_image):
     # Translate pixel data to mm by using a rigid key feature
     # TODO:
     #   - Views chequered board with known grid intervals
-    #   - calculates scale
+    #   - calculates scale and find reference home from clamp
     # see https://www.learnopencv.com/camera-calibration-using-opencv/
 
     # BELOW 8 LINES SHOULD BE REPLACED IN THE PRODUCTION ENVIRONMENT

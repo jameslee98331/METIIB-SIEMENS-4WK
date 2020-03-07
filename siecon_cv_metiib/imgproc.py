@@ -72,14 +72,14 @@ def keypts(img: np.ndarray, mask: np.ndarray) -> tuple:
     return cv.KeyPoint_convert(kp), kp
 
 
-def keypts_img(img: np.ndarray, key_points: cv.KeyPoint) -> np.ndarray:
+def keypts_img(img: np.ndarray, key_points: list) -> np.ndarray:
     """
     Args:
         img (np.ndarray): array of img for key point detection
-        key_points (cv.KeyPoint): list of keypoint objects
+        key_points (list): list of keypoint objects
 
     Returns:
-        img (np.ndarray): img input image overlaid with keypoints in green
+        np.ndarray: img input image overlaid with keypoints in green
     """
 
     # draw only keypoints location,not size and orientation
