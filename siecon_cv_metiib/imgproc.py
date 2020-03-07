@@ -116,55 +116,56 @@ def extract_feature_centroid(img: np.ndarray, mask_rect: namedtuple) -> tuple:
 
 
 # TODO: This function needs some refactoring when in production environment
-def calibration_rect(cropped_img: np.ndarray, X_RANGE_LEFT: tuple, X_RANGE_RIGHT: tuple,
-                     Y_RANGE_TOP: tuple, Y_RANGE_BOT: tuple) -> tuple:
+def calibration_rect(cropped_img: np.ndarray, x_range_left: tuple, x_range_right: tuple,
+                     y_range_top: tuple, y_range_bot: tuple) -> tuple:
     """
     Args:
         cropped_img (ndarray): cropped image for calibration
-        X_RANGE_LEFT (tuple): range of col indices for left vertical edge
-        X_RANGE_RIGHT (tuple): range of col indices for right vertical edge
-        Y_RANGE_TOP (tuple): range of row indices for top horizontal edge
-        Y_RANGE_BOT (tuple): range of row indices for bottom horizontal edge
+        x_range_left (tuple): range of col indices for left vertical edge
+        x_range_right (tuple): range of col indices for right vertical edge
+        y_range_top (tuple): range of row indices for top horizontal edge
+        y_range_bot (tuple): range of row indices for bottom horizontal edge
 
     Returns:
         tuple: (list of tuples of calibration coordinates in (x,y), key point objects)
     """
 
     # Extract feature of top left corner
-    MASK_TOP_LEFT_START = (X_RANGE_LEFT[0], Y_RANGE_TOP[0])
-    MASK_TOP_LEFT_FINISH = (X_RANGE_LEFT[1], Y_RANGE_TOP[1])
+    MASK_TOP_LEFT_START = (x_range_left[0], y_range_top[0])
+    MASK_TOP_LEFT_FINISH = (x_range_left[1], y_range_top[1])
     mask_top_left_rect = draw_rect(MASK_TOP_LEFT_START, MASK_TOP_LEFT_FINISH)
     key_pts_top_left_centroid, key_pts_top_left = extract_feature_centroid(cropped_img, mask_top_left_rect)
 
     # Extract feature of top right corner
-    MASK_TOP_RIGHT_START = (X_RANGE_RIGHT[0], Y_RANGE_TOP[0])
-    MASK_TOP_RIGHT_END = (X_RANGE_RIGHT[1], Y_RANGE_TOP[1])
+    MASK_TOP_RIGHT_START = (x_range_right[0], y_range_top[0])
+    MASK_TOP_RIGHT_END = (x_range_right[1], y_range_top[1])
     mask_top_right_rect = draw_rect(MASK_TOP_RIGHT_START, MASK_TOP_RIGHT_END)
     key_pts_top_right_centroid, key_pts_top_right = extract_feature_centroid(cropped_img, mask_top_right_rect)
 
     # Extract feature of bottom left corner
-    MASK_BOT_LEFT_START = (X_RANGE_LEFT[0], Y_RANGE_BOT[0])
-    MASK_BOT_LEFT_END = (X_RANGE_LEFT[1], Y_RANGE_BOT[1])
+    MASK_BOT_LEFT_START = (x_range_left[0], y_range_bot[0])
+    MASK_BOT_LEFT_END = (x_range_left[1], y_range_bot[1])
     mask_bot_left_rect = draw_rect(MASK_BOT_LEFT_START, MASK_BOT_LEFT_END)
     key_pts_bot_left_centroid, key_pts_bot_left = extract_feature_centroid(cropped_img, mask_bot_left_rect)
 
     # Extract feature of bottom right corner
-    MASK_BOT_RIGHT_START = (X_RANGE_RIGHT[0], Y_RANGE_BOT[0])
-    MASK_BOT_RIGHT_END = (X_RANGE_RIGHT[1], Y_RANGE_BOT[1])
+    MASK_BOT_RIGHT_START = (x_range_right[0], y_range_bot[0])
+    MASK_BOT_RIGHT_END = (x_range_right[1], y_range_bot[1])
     mask_bot_right_rect = draw_rect(MASK_BOT_RIGHT_START, MASK_BOT_RIGHT_END)
     key_pts_bot_right_centroid, key_pts_bot_right = extract_feature_centroid(cropped_img, mask_bot_right_rect)
 
-    loc = [key_pts_top_left_centroid, key_pts_top_right_centroid, key_pts_bot_left_centroid, key_pts_bot_right_centroid]
+    rect_corner_coords = namedtuple('rect_corner_coords', 'top_left, top_right, bot_left, bot_right')
+    rect_corner_coords = rect_corner_coords(key_pts_top_left_centroid, key_pts_top_right_centroid, key_pts_bot_left_centroid, key_pts_bot_right_centroid)
     kp = key_pts_top_left + key_pts_top_right + key_pts_bot_left + key_pts_bot_right
 
-    return loc, kp
+    return rect_corner_coords, kp
 
 
 # TODO: This function needs some refactoring when in production environment
-def find_scale(loc: list, col_const: float, row_const: float) -> np.ndarray:
+def find_scale(rect_corner_coords: namedtuple, col_const: float, row_const: float) -> np.ndarray:
     """
     Args:
-        loc (list): list of 4 corner coordinates in tuples (x,y)
+        rect_corner_coords (namedtuple): namedtuple of 4 corner coordinates in tuples (x,y)
         col_const (float): length of horizontal feature in mm
         row_const (float): length of vertical feature in mm
 
@@ -173,8 +174,23 @@ def find_scale(loc: list, col_const: float, row_const: float) -> np.ndarray:
     """
 
     # Calculate the length of the two edges in pixels
-    horizontal_edge = np.mean([(loc[1][0] - loc[0][0]), (loc[3][0] - loc[2][0])])
-    vert_edge = np.mean([(loc[2][1] - loc[0][1]), (loc[3][1] - loc[1][1])])
+    horiz_edge = np.mean([(rect_corner_coords.top_right[0] - rect_corner_coords.top_left[0]),
+                               (rect_corner_coords.bot_right[0] - rect_corner_coords.bot_left[0])])
+    vert_edge = np.mean([(rect_corner_coords.bot_left[1] - rect_corner_coords.top_left[1]),
+                         (rect_corner_coords.bot_right[1] - rect_corner_coords.top_right[1])])
 
-    # Calculate the pixel per mm scale factor, top_edge = 33mm, vert_edge = 14mm
-    return np.mean([horizontal_edge / col_const, vert_edge / row_const], dtype=np.float64)
+    # Calculate the pixel per mm scale factor, horiz_edge = 33mm, vert_edge = 14mm
+    return np.mean([horiz_edge / col_const, vert_edge / row_const], dtype=np.float64)
+
+
+def calc_img_rotation(first_pin: list, last_pin: list) -> float:
+    """
+    Args:
+        first_pin (list): Tuple of location of first pin in (x,y)
+        last_pin (list): Tuple of location of first pin in (x,y)
+
+    Returns:
+        float: rotational angle of socket (clockwise positive)
+    """
+
+    return np.arctan((first_pin[0] - last_pin[0]) / (last_pin[1] - first_pin[1]))

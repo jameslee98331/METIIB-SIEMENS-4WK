@@ -11,9 +11,7 @@ def send(offset: tuple):
 
     HOST = "192.168.0.10"  # The remote host
     PORT = 30000  # The same port as used by the server
-    print("Starting Program")
 
-    # TODO: change sleep and while loop to TimeOut
     while True:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -22,11 +20,9 @@ def send(offset: tuple):
         c, addr = s.accept()  # Establish connection with client.
         try:
             msg = c.recv(1024)
-            print(msg)
             time.sleep(1)
             if msg == b"asking_for_data":
-                time.sleep(0.5)
-                print("")
+                print(msg)
                 time.sleep(0.5)
                 c.send(send_string)
                 print(f'Send {x_lin_off}, {z_lin_off}, {y_rot_off}')
@@ -37,5 +33,3 @@ def send(offset: tuple):
                 c.close()
                 s.close()
                 continue
-
-    print("Program finish")

@@ -53,8 +53,9 @@ class TestImgProc:
         assert imgproc.centroid(test_kp_coord) == (2.5, 3)
 
     def test_find_scale(self):
-        test_loc = [(5, 10), (10, 10), (5, 20), (10, 20)]
+        test_rect_corner_coords = namedtuple('test_rect_corner_coords', 'top_left, top_right, bot_left, bot_right')
+        test_rect_corner_coords = test_rect_corner_coords((5, 10), (10, 10), (5, 20), (10, 20))
         test_col_const = 2.5
         test_row_const = 4
 
-        assert imgproc.find_scale(test_loc, test_col_const, test_row_const) == 2.25
+        assert imgproc.find_scale(test_rect_corner_coords, test_col_const, test_row_const) == 2.25
